@@ -4,7 +4,6 @@ from collections import Counter
 
 from src.glowfit.schemas import Review
 
-
 ASPECT_KEYWORDS: dict[str, tuple[str, ...]] = {
     "texture": ("texture", "gel", "watery", "light", "sticky", "matte"),
     "fragrance": ("fragrance", "scent", "scented", "fragrance free"),

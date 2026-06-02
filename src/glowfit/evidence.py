@@ -11,10 +11,12 @@ class EvidenceIndex:
     reviews: tuple[Review, ...]
 
     @classmethod
-    def from_reviews(cls, reviews: list[Review]) -> "EvidenceIndex":
+    def from_reviews(cls, reviews: list[Review]) -> EvidenceIndex:
         return cls(reviews=tuple(reviews))
 
-    def search(self, product_id: str, query_terms: list[str], limit: int = 3) -> list[EvidenceSnippet]:
+    def search(
+        self, product_id: str, query_terms: list[str], limit: int = 3
+    ) -> list[EvidenceSnippet]:
         lowered_terms = [term.lower() for term in query_terms]
         scored: list[tuple[float, Review]] = []
 

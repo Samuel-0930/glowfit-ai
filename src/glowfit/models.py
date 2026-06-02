@@ -55,7 +55,9 @@ class RatingRecommender:
 
 
 class ContentBasedRecommender:
-    def score(self, products: list[Product], preferences: UserPreferences) -> list[tuple[str, float]]:
+    def score(
+        self, products: list[Product], preferences: UserPreferences
+    ) -> list[tuple[str, float]]:
         preference_tokens = _tokenize_preferences(preferences)
         scores: dict[str, float] = {}
         for product in products:
@@ -96,7 +98,9 @@ class TwoTowerRetrieval:
         norm = np.linalg.norm(vector)
         return vector if norm == 0 else vector / norm
 
-    def score(self, products: list[Product], preferences: UserPreferences) -> list[tuple[str, float]]:
+    def score(
+        self, products: list[Product], preferences: UserPreferences
+    ) -> list[tuple[str, float]]:
         preference_text = " ".join(
             [preferences.skin_type, preferences.texture, *preferences.concerns, *preferences.avoid]
         )
