@@ -2,7 +2,6 @@ from pathlib import Path
 
 from src.glowfit.data import load_preferences, load_products, load_reviews
 
-
 SAMPLE_DIR = Path("sample_data")
 
 

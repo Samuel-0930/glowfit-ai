@@ -8,7 +8,6 @@ from pydantic import BaseModel
 
 from src.glowfit.schemas import Product, Review, UserPreferences
 
-
 ModelT = TypeVar("ModelT", bound=BaseModel)
 
 
