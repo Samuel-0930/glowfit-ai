@@ -1,0 +1,32 @@
+[
+  {
+    "product_id": "p_glow_gel",
+    "name": "Glow Barrier Gel Cream",
+    "category": "moisturizer",
+    "brand": "Aster Lab",
+    "price_usd": 24.0,
+    "average_rating": 4.6,
+    "review_count": 1180,
+    "attributes": ["light texture", "fragrance free", "dry skin", "barrier care"]
+  },
+  {
+    "product_id": "p_calm_ampoule",
+    "name": "Calm Cica Ampoule",
+    "category": "serum",
+    "brand": "Seoul Leaf",
+    "price_usd": 19.0,
+    "average_rating": 4.4,
+    "review_count": 860,
+    "attributes": ["sensitive skin", "redness", "watery texture", "low irritation"]
+  },
+  {
+    "product_id": "p_velvet_sunscreen",
+    "name": "Velvet Air Sunscreen",
+    "category": "sunscreen",
+    "brand": "Namu Studio",
+    "price_usd": 17.0,
+    "average_rating": 4.1,
+    "review_count": 640,
+    "attributes": ["matte finish", "oily skin", "scented", "no white cast"]
+  }
+]

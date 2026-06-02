@@ -1,0 +1,42 @@
+[
+  {
+    "review_id": "r_001",
+    "user_id": "u_1",
+    "product_id": "p_glow_gel",
+    "rating": 5,
+    "text": "Light gel texture but still moisturizing. My dry skin felt calm and the fragrance free formula did not sting.",
+    "timestamp": "2025-01-02"
+  },
+  {
+    "review_id": "r_002",
+    "user_id": "u_2",
+    "product_id": "p_glow_gel",
+    "rating": 4,
+    "text": "Great barrier cream for winter. It can feel a little sticky under makeup.",
+    "timestamp": "2025-01-03"
+  },
+  {
+    "review_id": "r_003",
+    "user_id": "u_3",
+    "product_id": "p_calm_ampoule",
+    "rating": 5,
+    "text": "The watery texture absorbs fast and helped with redness. Very gentle for sensitive skin.",
+    "timestamp": "2025-01-04"
+  },
+  {
+    "review_id": "r_004",
+    "user_id": "u_4",
+    "product_id": "p_calm_ampoule",
+    "rating": 3,
+    "text": "Gentle but not hydrating enough for dry patches. I needed another moisturizer.",
+    "timestamp": "2025-01-05"
+  },
+  {
+    "review_id": "r_005",
+    "user_id": "u_5",
+    "product_id": "p_velvet_sunscreen",
+    "rating": 4,
+    "text": "Matte finish is excellent for oily skin and there is no white cast, but the scent is noticeable.",
+    "timestamp": "2025-01-06"
+  }
+]
