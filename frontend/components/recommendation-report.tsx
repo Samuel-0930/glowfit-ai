@@ -4,14 +4,13 @@ import type { ReportResponse } from "../lib/types";
 
 export function RecommendationReport({ report }: { report: ReportResponse }) {
   const top = report.recommendations[0];
-  const summary = report.summary.replace(`${top.product.name} is `, "");
 
   return (
     <section className="report-grid">
       <main className="report-main">
         <p className="eyebrow">Recommendation report</p>
         <h1>GlowFit AI</h1>
-        <p className="summary">{summary}</p>
+        <p className="summary">{report.summary}</p>
 
         <div className="recommendation-list">
           {report.recommendations.map((recommendation) => (
