@@ -1,0 +1,30 @@
+:root {
+  --canvas: #ffffff;
+  --canvas-warm: #fbfbf5;
+  --surface-soft: #f6f7f2;
+  --ink: #111111;
+  --ink-muted: #52525b;
+  --ink-subtle: #71717a;
+  --hairline: #e4e4e7;
+  --brand-black: #000000;
+  --brand-mint: #c1fbd4;
+  --brand-pistachio: #d4f9e0;
+  --beauty-rose: #f6c7d0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--canvas-warm);
+  color: var(--ink);
+  font-family: Inter, Helvetica, Arial, sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
