@@ -28,3 +28,167 @@ input,
 select {
   font: inherit;
 }
+
+.top-nav {
+  align-items: center;
+  background: var(--canvas);
+  border-bottom: 1px solid var(--hairline);
+  display: flex;
+  height: 64px;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.top-nav nav {
+  display: flex;
+  gap: 16px;
+}
+
+.top-nav a {
+  color: var(--ink-muted);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.workspace {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 300px minmax(0, 1fr);
+  padding: 24px;
+}
+
+.preference-panel,
+.evidence-panel,
+.model-panel,
+.comparison-panel,
+.product-card {
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.preference-panel {
+  height: fit-content;
+}
+
+.report-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) 360px;
+}
+
+.report-main h1 {
+  font-size: 40px;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.summary {
+  color: var(--ink-muted);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.recommendation-list {
+  display: grid;
+  gap: 12px;
+}
+
+.product-card {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 72px 1fr auto;
+}
+
+.product-image {
+  aspect-ratio: 1;
+  background: var(--brand-pistachio);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  grid-column: 1 / -1;
+}
+
+.tag {
+  background: var(--brand-pistachio);
+  border-radius: 9999px;
+  color: var(--ink);
+  font-size: 12px;
+  padding: 4px 8px;
+}
+
+.tag-soft {
+  background: var(--surface-soft);
+}
+
+.score {
+  background: var(--brand-mint);
+  border-radius: 9999px;
+  font-weight: 700;
+  height: 40px;
+  padding: 10px 12px;
+}
+
+.eyebrow {
+  color: var(--ink-subtle);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.muted {
+  color: var(--ink-muted);
+}
+
+.field-group,
+.metric-row,
+.comparison-row {
+  border-top: 1px solid var(--hairline);
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+}
+
+.primary-button {
+  background: var(--brand-black);
+  border: 0;
+  border-radius: 9999px;
+  color: white;
+  cursor: pointer;
+  height: 44px;
+  padding: 0 18px;
+  width: 100%;
+}
+
+.primary-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.evidence-card {
+  border-top: 1px solid var(--hairline);
+  margin: 0;
+  padding: 12px 0;
+}
+
+.evidence-card blockquote {
+  margin: 0 0 8px;
+}
+
+.comparison-panel {
+  margin: 0 24px 24px;
+}
+
+@media (max-width: 1023px) {
+  .workspace,
+  .report-grid {
+    grid-template-columns: 1fr;
+  }
+}
