@@ -159,7 +159,7 @@ Purpose:
 
 - Collaborative filtering:
   - User-product rating/interactions matrix.
-- Matrix factorization for explicit ratings, with implicit-feedback conversion used only if the chosen dataset subset lacks reliable explicit-rating labels.
+  - Matrix factorization for explicit ratings, with implicit-feedback conversion used only if the chosen dataset subset lacks reliable explicit-rating labels.
 
 Purpose:
 
