@@ -48,10 +48,18 @@ select {
   gap: 16px;
 }
 
-.top-nav a {
+.nav-tab {
+  background: transparent;
+  border: 0;
   color: var(--ink-muted);
+  cursor: pointer;
   font-size: 14px;
-  text-decoration: none;
+  padding: 8px 0;
+}
+
+.nav-tab[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 700;
 }
 
 .workspace {
@@ -62,6 +70,8 @@ select {
 }
 
 .preference-panel,
+.guide-panel,
+.content-panel,
 .evidence-panel,
 .model-panel,
 .comparison-panel,
@@ -74,6 +84,75 @@ select {
 
 .preference-panel {
   height: fit-content;
+}
+
+.guide-panel {
+  align-items: flex-start;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 280px 1fr;
+  margin: 24px 24px 0;
+}
+
+.guide-panel h2 {
+  font-size: 28px;
+  margin: 4px 0 0;
+}
+
+.guide-list {
+  color: var(--ink-muted);
+  display: grid;
+  gap: 10px;
+  line-height: 1.55;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.tab-page {
+  padding: 24px;
+}
+
+.content-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.content-panel h1 {
+  font-size: 36px;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.metrics-grid,
+.portfolio-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.metric-card,
+.portfolio-grid a {
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  color: var(--ink);
+  display: grid;
+  gap: 8px;
+  min-height: 120px;
+  padding: 16px;
+  text-decoration: none;
+}
+
+.metric-card strong {
+  font-size: 28px;
+}
+
+.portfolio-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.portfolio-grid span {
+  color: var(--ink-muted);
+  line-height: 1.45;
 }
 
 .report-grid {
@@ -190,10 +269,20 @@ select {
   margin: 0 24px 24px;
 }
 
+.tab-page .comparison-panel {
+  margin: 0;
+}
+
 @media (max-width: 1023px) {
   .workspace,
+  .guide-panel,
   .report-grid {
     grid-template-columns: 1fr;
+  }
+
+  .metrics-grid,
+  .portfolio-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -214,13 +303,24 @@ select {
     white-space: normal;
   }
 
-  .top-nav a {
+  .nav-tab {
     flex: 0 0 auto;
     font-size: 13px;
   }
 
   .workspace {
     padding: 24px;
+  }
+
+  .guide-panel,
+  .tab-page {
+    margin: 24px;
+    padding: 0;
+  }
+
+  .metrics-grid,
+  .portfolio-grid {
+    grid-template-columns: 1fr;
   }
 
   .product-card {
