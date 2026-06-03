@@ -1,4 +1,4 @@
-import { mockReport } from "./mock-data";
+import { inferRecommendations, mockReport } from "./mock-data";
 import type { ReportResponse, UserPreferences } from "./types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
@@ -11,10 +11,10 @@ export async function fetchReport(preferences: UserPreferences): Promise<ReportR
       body: JSON.stringify(preferences)
     });
     if (!response.ok) {
-      return mockReport;
+      return inferRecommendations(preferences) ?? mockReport;
     }
     return (await response.json()) as ReportResponse;
   } catch {
-    return mockReport;
+    return inferRecommendations(preferences) ?? mockReport;
   }
 }

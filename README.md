@@ -2,72 +2,77 @@
 
 [![CI](https://github.com/Samuel-0930/glowfit-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Samuel-0930/glowfit-ai/actions/workflows/ci.yml)
 
-**리뷰 근거를 보여주는 설명 가능한 뷰티 추천 리포트 시스템**
+**피부 프로필을 입력하면 리뷰 근거와 함께 상위 제품을 동적으로 추천하는 뷰티 추천 시스템**
 
-GlowFit AI는 화장품 리뷰 데이터에서 사용자 취향, 피부 고민, 향 민감도, 예산 조건을 반영해 제품을 추천하고, 왜 그 제품이 맞는지 리뷰 근거와 모델 점수로 설명하는 데이터 사이언스/ML 엔지니어링 포트폴리오 프로젝트입니다.
-
-![GlowFit AI demo](docs/assets/glowfit-demo.gif)
+GlowFit AI는 화장품 리뷰와 상품 속성 데이터를 기반으로 사용자의 피부 타입, 고민, 선호 제형, 향 민감도, 예산, 회피 조건을 반영해 제품을 랭킹합니다. 단순히 정해진 결과를 보여주는 데모가 아니라, 입력 조건이 바뀌면 추천 후보와 점수, 리뷰 근거, 비교 화면이 함께 바뀌도록 구성했습니다.
 
 [Notion 포트폴리오 보기](https://app.notion.com/p/3746f7e3d82881919c76e7340a8a508a)
 
-## 한눈에 보는 결과
+## 현재 데모에서 볼 수 있는 것
 
-| 영역 | 구현 내용 |
+| 화면 | 역할 |
 | --- | --- |
-| 문제 정의 | 리뷰가 많은 뷰티 상품에서 사용자에게 맞는 제품과 근거를 빠르게 찾기 |
-| 데이터 파이프라인 | Amazon Beauty 스타일 JSONL 파싱, Hugging Face 공개 데이터 preview, ASIN 기준 상품-리뷰 join |
-| 추천 모델 | popularity, rating, collaborative, content-based, Two-Tower, hybrid ranker |
-| 설명 가능성 | 추천 결과 옆에 리뷰 evidence snippet, model score, caution을 함께 표시 |
-| 평가 | precision@k, recall@k, NDCG@k 기반 offline ranking evaluation |
-| 제품화 | FastAPI + Next.js report workspace, 반응형 데모 화면 |
+| 추천 | 사용자가 피부 조건을 직접 선택하고 상위 3개 제품을 추천받습니다. |
+| 비교 | fit score, confidence, budget, review, hybrid signal을 원형 점수와 bar로 비교합니다. |
+| 리뷰 분석 | 추천에 사용된 리뷰 snippet과 aspect coverage를 확인합니다. |
+| 실험 | public artifact evaluation 결과와 ranking metric을 확인합니다. |
 
-## 데모 화면
-
-| Desktop | Mobile |
-| --- | --- |
-| ![Desktop report workspace](docs/assets/glowfit-report-desktop.png) | ![Mobile report workspace](docs/assets/glowfit-report-mobile.png) |
-
-## 왜 이 프로젝트가 포트폴리오로 강한가
-
-단순히 예쁜 추천 UI를 만든 것이 아니라, 채용자가 데이터 사이언스 프로젝트에서 보고 싶어 하는 흐름을 끝까지 연결했습니다.
+## 제품 흐름
 
 ```mermaid
 flowchart LR
-    A["Public review data"] --> B["Schema mapping"]
-    B --> C["ASIN product-review join"]
-    C --> D["Recommendation models"]
-    D --> E["Offline ranking metrics"]
-    D --> F["Evidence-backed report UI"]
+    A["사용자 프로필 입력"] --> B["상품/리뷰 카탈로그"]
+    B --> C["조건 기반 scoring"]
+    C --> D["상위 3개 ranking"]
+    D --> E["추천 카드"]
+    D --> F["Compare"]
+    D --> G["Review Insights"]
 ```
 
-- **데이터 엔지니어링**: 공개 데이터와 deterministic fixture를 분리하고, raw/processed artifact 경계를 명확히 관리했습니다.
-- **추천 시스템 이해**: baseline부터 Two-Tower 스타일 retrieval까지 모델 tier를 나누고 비교할 수 있게 만들었습니다.
-- **평가 가능성**: 추천 결과를 감으로 판단하지 않고 precision@k, recall@k, NDCG@k로 비교합니다.
-- **설명 가능한 AI 제품 감각**: 모델 점수만 보여주지 않고, 실제 리뷰 근거를 함께 보여주는 report-first UX를 구현했습니다.
+## 핵심 구현
 
-## 모델 스택
+| 영역 | 구현 내용 |
+| --- | --- |
+| 입력 자유도 | 피부 타입, concerns, texture, fragrance sensitivity, budget, avoid 조건을 직접 선택 |
+| 동적 랭킹 | `inferRecommendations()`가 입력 profile과 상품 match tag, 리뷰 evidence, 예산 조건을 조합해 score 계산 |
+| 설명 가능성 | 추천 결과마다 reasons, cautions, evidence snippet, model signal을 함께 표시 |
+| 비교 UX | fit/confidence를 원형 score로 보여주고, model signal은 동적 bar로 비교 |
+| 한글 제품 경험 | 채용자 설명을 노골적으로 전면에 두기보다 실제 사용자용 제품 화면처럼 구성 |
+| 검증 | Next build, Vitest, Python test suite, ranking evaluation script |
 
-| Tier | Model | 목적 |
+## 데모 화면
+
+| 추천 변화 | 후보 비교 | 리뷰 분석 |
 | --- | --- | --- |
-| Baseline | Popularity | 리뷰 수가 많은 제품을 우선 추천하는 기준선 |
-| Baseline | Average rating | 평점이 높은 제품을 우선 추천하는 기준선 |
-| Core | Collaborative filtering path | 리뷰 평점 기반 사용자-상품 상호작용 신호 반영 |
-| Core | Content-based scoring | 피부 타입, 텍스처, 고민, 회피 조건과 상품 속성 매칭 |
-| Advanced | Two-Tower Retrieval | 사용자 선호 벡터와 상품 벡터의 compatibility scoring |
-| Product layer | Hybrid ranker | 모델 점수와 evidence availability를 함께 반영 |
+| ![Profile driven recommendation](docs/assets/browser-flow/profile-oily-script.png) | ![Compare ranked products](docs/assets/browser-flow/02-compare.png) | ![Review insights](docs/assets/browser-flow/03-insights.png) |
 
-## 평가 결과 예시
+## 왜 이 프로젝트가 포트폴리오로 강한가
 
-기본 fixture 기준 sample evaluation 결과입니다.
+- **추천 시스템 문제를 제품 흐름으로 연결했습니다.** 입력 profile, ranking score, 추천 결과, 리뷰 근거, 비교 화면이 하나의 사용자 여정으로 이어집니다.
+- **정답 고정 데모를 피했습니다.** 조건을 바꾸면 추천 후보와 점수도 바뀌는 구조라 모델/랭킹 로직이 화면에서 드러납니다.
+- **설명 가능한 추천을 구현했습니다.** 단순 점수 대신 review evidence와 aspect tag를 함께 보여줍니다.
+- **데이터 파이프라인과 평가를 갖췄습니다.** 공개 데이터 preview, ASIN join, offline ranking evaluation을 별도 script와 문서로 관리합니다.
 
-| Metric | Value |
-| --- | ---: |
-| precision@1 | 1.0000 |
-| recall@1 | 0.5000 |
-| ndcg@1 | 1.0000 |
-| precision@3 | 0.6667 |
-| recall@3 | 1.0000 |
-| ndcg@3 | 0.9197 |
+## 모델/랭킹 구조
+
+현재 프론트엔드 데모는 client-side inference로 동작합니다. Supabase 같은 DB를 붙이면 아래 구조로 자연스럽게 확장할 수 있습니다.
+
+```mermaid
+flowchart TB
+    A["products table"] --> D["ranking API"]
+    B["reviews table"] --> D
+    C["product_tags table"] --> D
+    D --> E["hybrid score"]
+    E --> F["top-3 recommendations"]
+    F --> G["evidence-backed UI"]
+```
+
+| Signal | 의미 |
+| --- | --- |
+| profile | 피부 타입, 고민, 제형 조건과 상품 tag의 일치도 |
+| review | 선택된 리뷰 evidence의 relevance |
+| budget | 예산 조건 충족 여부 |
+| hybrid | profile, review, rating, review count, budget penalty를 합친 최종 score |
 
 ## 실행 방법
 
@@ -134,7 +139,13 @@ npm --prefix frontend test
 npm --prefix frontend run build
 ```
 
-현재 Python test suite는 `31 passed`까지 확인했습니다.
+최근 확인:
+
+| Check | Result |
+| --- | --- |
+| Frontend build | passed |
+| Frontend tests | 3 passed |
+| Python tests | 31 passed |
 
 ## 문서
 
