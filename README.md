@@ -2,6 +2,8 @@
 
 GlowFit AI is an explainable beauty recommendation report system. It recommends cosmetics from review data, shows why each product fits a user profile, and keeps review evidence visible beside the recommendation.
 
+![GlowFit AI report workspace](docs/assets/glowfit-report-desktop.png)
+
 ## What It Demonstrates
 
 - Data science: review data preparation, sentiment/aspect extraction, recommender comparisons, and evaluation-ready tests.
@@ -24,6 +26,25 @@ sample_data -> src/glowfit pipeline -> FastAPI -> Next.js report workspace
 | Core | Content-based, collaborative filtering path | Recommender fundamentals |
 | Advanced | Two-Tower Retrieval | Modern retrieval-style matching |
 | Explanation | Evidence-backed deterministic report path | Grounded user-facing output |
+
+## Evaluation
+
+Phase 2 adds offline ranking evaluation so model changes can be compared instead of judged by demo output alone.
+
+```bash
+python scripts/evaluate_sample_recommenders.py
+```
+
+Current sample metrics:
+
+| Metric | Value |
+| --- | ---: |
+| precision@1 | 1.0000 |
+| recall@1 | 0.5000 |
+| ndcg@1 | 1.0000 |
+| precision@3 | 0.6667 |
+| recall@3 | 1.0000 |
+| ndcg@3 | 0.9197 |
 
 ## Run Locally
 
@@ -60,4 +81,5 @@ Open `http://localhost:3000`.
 - Implementation plan: `docs/superpowers/plans/2026-06-03-glowfit-ai-phase1-implementation.md`
 - Frontend design system: `DESIGN.md`
 - Architecture notes: `docs/architecture.md`
+- Evaluation notes: `docs/evaluation.md`
 - Portfolio case study draft: `docs/portfolio-case-study.md`
