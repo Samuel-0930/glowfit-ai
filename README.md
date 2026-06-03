@@ -4,7 +4,9 @@
 
 GlowFit AI는 화장품 리뷰 데이터에서 사용자 취향, 피부 고민, 향 민감도, 예산 조건을 반영해 제품을 추천하고, 왜 그 제품이 맞는지 리뷰 근거와 모델 점수로 설명하는 데이터 사이언스/ML 엔지니어링 포트폴리오 프로젝트입니다.
 
-![GlowFit AI desktop report](docs/assets/glowfit-report-desktop.png)
+![GlowFit AI demo](docs/assets/glowfit-demo.gif)
+
+[Notion 포트폴리오 보기](https://app.notion.com/p/3746f7e3d82881919c76e7340a8a508a)
 
 ## 한눈에 보는 결과
 
