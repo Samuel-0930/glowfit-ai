@@ -1,5 +1,7 @@
 # GlowFit AI
 
+[![CI](https://github.com/Samuel-0930/glowfit-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Samuel-0930/glowfit-ai/actions/workflows/ci.yml)
+
 **리뷰 근거를 보여주는 설명 가능한 뷰티 추천 리포트 시스템**
 
 GlowFit AI는 화장품 리뷰 데이터에서 사용자 취향, 피부 고민, 향 민감도, 예산 조건을 반영해 제품을 추천하고, 왜 그 제품이 맞는지 리뷰 근거와 모델 점수로 설명하는 데이터 사이언스/ML 엔지니어링 포트폴리오 프로젝트입니다.
