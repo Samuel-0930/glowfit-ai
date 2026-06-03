@@ -8,7 +8,7 @@ Beauty product shoppers often rely on dense review pages to decide whether a pro
 
 Phase 1 uses committed sample fixtures for deterministic development and is designed to scale to public Amazon Beauty-style review data. The current sample set includes product metadata, ratings, review text, and a default user preference profile.
 
-Phase 2 starts that scale-up path with Amazon Beauty-style record adapters and offline recommender metrics. The project can now parse external metadata/review records into the local `Product` and `Review` schemas, then evaluate ranked recommendations with precision@k, recall@k, and NDCG@k.
+Phase 2 starts that scale-up path with Amazon Beauty-style record adapters, a JSONL ingestion pipeline, and offline recommender metrics. The project can now parse external metadata/review records into the local `Product` and `Review` schemas, write processed artifacts, then evaluate ranked recommendations with precision@k, recall@k, and NDCG@k.
 
 ## Modeling Progression
 

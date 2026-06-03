@@ -31,6 +31,17 @@ sample_data -> src/glowfit pipeline -> FastAPI -> Next.js report workspace
 
 Phase 2 adds offline ranking evaluation so model changes can be compared instead of judged by demo output alone.
 
+Convert Amazon Beauty-style JSONL into GlowFit processed artifacts:
+
+```bash
+python scripts/ingest_amazon_beauty_jsonl.py \
+  --metadata sample_data/raw_amazon_metadata.jsonl \
+  --reviews sample_data/raw_amazon_reviews.jsonl \
+  --output-dir data/processed/amazon_beauty_sample
+```
+
+Generated files are written under ignored `data/processed/` paths so large public artifacts stay out of Git.
+
 ```bash
 python scripts/evaluate_sample_recommenders.py
 ```
@@ -81,5 +92,6 @@ Open `http://localhost:3000`.
 - Implementation plan: `docs/superpowers/plans/2026-06-03-glowfit-ai-phase1-implementation.md`
 - Frontend design system: `DESIGN.md`
 - Architecture notes: `docs/architecture.md`
+- Data ingestion notes: `docs/data-ingestion.md`
 - Evaluation notes: `docs/evaluation.md`
 - Portfolio case study draft: `docs/portfolio-case-study.md`
