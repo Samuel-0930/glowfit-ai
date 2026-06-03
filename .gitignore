@@ -7,6 +7,7 @@
 .worktrees/
 
 node_modules/
+node_modules_broken_*/
 .next/
 out/
 dist/
