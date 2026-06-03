@@ -2473,7 +2473,7 @@ The demo opens directly to a report-first workspace. A reviewer can see the user
 Run:
 
 ```bash
-rg -n "NEEDS_DECISION|INCOMPLETE_FIELD" README.md docs
+rg -n "DECISION[_]REQUIRED|FIELD[_]INCOMPLETE" README.md docs
 ```
 
 Expected:
