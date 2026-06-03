@@ -48,6 +48,14 @@ Fetch a small public Hugging Face preview:
 python scripts/fetch_huggingface_preview.py --length 25
 ```
 
+Fetch an ASIN-joined Hugging Face mini dataset for public-data evaluation:
+
+```bash
+python scripts/fetch_huggingface_joined_preview.py \
+  --target-matches 25 \
+  --max-review-rows 250
+```
+
 ```bash
 python scripts/evaluate_sample_recommenders.py
 ```
@@ -100,5 +108,6 @@ Open `http://localhost:3000`.
 - Architecture notes: `docs/architecture.md`
 - Data ingestion notes: `docs/data-ingestion.md`
 - Hugging Face preview notes: `docs/huggingface-preview.md`
+- Hugging Face joined preview notes: `docs/huggingface-joined-preview.md`
 - Evaluation notes: `docs/evaluation.md`
 - Portfolio case study draft: `docs/portfolio-case-study.md`

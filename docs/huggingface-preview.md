@@ -34,4 +34,6 @@ Expected shape:
 
 ## Current Limitation
 
-The metadata and review previews come from separate public mirrors, so the first N metadata rows and first N review rows are not guaranteed to share the same ASINs. This preview step validates schema mapping and public-data access. A later joined dataset step should align reviews to product metadata by ASIN before model evaluation.
+The metadata and review previews come from separate public mirrors, so the first N metadata rows and first N review rows are not guaranteed to share the same ASINs. This preview step validates schema mapping and public-data access.
+
+Use `scripts/fetch_huggingface_joined_preview.py` when the next step needs products and reviews aligned by ASIN for ranking evaluation or evidence retrieval experiments.
