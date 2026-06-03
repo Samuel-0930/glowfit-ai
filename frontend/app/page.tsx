@@ -7,7 +7,7 @@ import { PreferenceForm } from "../components/preference-form";
 import { ProductComparison } from "../components/product-comparison";
 import { RecommendationReport } from "../components/recommendation-report";
 import { fetchReport } from "../lib/api";
-import { defaultPreferences, mockReport } from "../lib/mock-data";
+import { defaultPreferences, mockPublicEvaluation, mockReport } from "../lib/mock-data";
 import type { ReportResponse } from "../lib/types";
 
 type TabId = "recommend" | "compare" | "insights" | "experiments" | "portfolio";
@@ -119,6 +119,41 @@ export default function Page() {
               Public artifact evaluator는 products.json과 reviews.json을 읽고 popularity, rating,
               collaborative, content, two_tower, hybrid ranker를 같은 metric으로 비교합니다.
             </p>
+            <section className="artifact-panel">
+              <div>
+                <p className="eyebrow">public_evaluation.json 예시</p>
+                <h2>CLI output이 화면에서는 이렇게 읽힙니다</h2>
+                <p className="muted">
+                  {mockPublicEvaluation.artifact_dir}에서 {mockPublicEvaluation.product_count}개 상품과{" "}
+                  {mockPublicEvaluation.review_count}개 리뷰를 평가했습니다. Relevance rule:{" "}
+                  {mockPublicEvaluation.relevance_rule}.
+                </p>
+              </div>
+              <div className="evaluation-table" role="table" aria-label="Public evaluation metrics">
+                <div className="evaluation-row evaluation-head" role="row">
+                  <span>model</span>
+                  <span>precision@1</span>
+                  <span>recall@3</span>
+                  <span>ndcg@3</span>
+                  <span>top ranked ids</span>
+                </div>
+                {Object.entries(mockPublicEvaluation.models).map(([model, result]) => (
+                  <div className="evaluation-row" key={model} role="row">
+                    <strong>{model}</strong>
+                    <span>{result.metrics["precision@1"].toFixed(4)}</span>
+                    <span>{result.metrics["recall@3"].toFixed(4)}</span>
+                    <span>{result.metrics["ndcg@3"].toFixed(4)}</span>
+                    <span>{result.ranked_product_ids.slice(0, 3).join(", ")}</span>
+                  </div>
+                ))}
+              </div>
+              <pre className="command-snippet">
+                <code>
+                  python scripts/evaluate_public_artifacts.py --artifact-dir
+                  data/processed/hf_joined_preview --output artifacts/public_evaluation.json
+                </code>
+              </pre>
+            </section>
           </section>
         </main>
       )}

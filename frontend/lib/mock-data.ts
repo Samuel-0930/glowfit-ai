@@ -1,4 +1,4 @@
-import type { ReportResponse, UserPreferences } from "./types";
+import type { PublicEvaluationReport, ReportResponse, UserPreferences } from "./types";
 
 export const defaultPreferences: UserPreferences = {
   skin_type: "dry",
@@ -48,4 +48,47 @@ export const mockReport: ReportResponse = {
       }
     }
   ]
+};
+
+export const mockPublicEvaluation: PublicEvaluationReport = {
+  artifact_dir: "data/processed/hf_joined_preview",
+  product_count: 25,
+  review_count: 25,
+  relevance_rule: "review_rating >= 4",
+  relevant_product_ids: ["B001", "B002", "B003"],
+  k_values: [1, 3, 5],
+  models: {
+    popularity: {
+      ranked_product_ids: ["B001", "B004", "B002"],
+      metrics: {
+        "precision@1": 1,
+        "recall@3": 0.6667,
+        "ndcg@3": 0.9197
+      }
+    },
+    content: {
+      ranked_product_ids: ["B002", "B001", "B006"],
+      metrics: {
+        "precision@1": 1,
+        "recall@3": 0.6667,
+        "ndcg@3": 0.871
+      }
+    },
+    two_tower: {
+      ranked_product_ids: ["B003", "B002", "B001"],
+      metrics: {
+        "precision@1": 1,
+        "recall@3": 1,
+        "ndcg@3": 1
+      }
+    },
+    hybrid: {
+      ranked_product_ids: ["B001", "B003", "B002"],
+      metrics: {
+        "precision@1": 1,
+        "recall@3": 1,
+        "ndcg@3": 1
+      }
+    }
+  }
 };

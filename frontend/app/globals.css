@@ -155,6 +155,56 @@ select {
   line-height: 1.45;
 }
 
+.artifact-panel {
+  border-top: 1px solid var(--hairline);
+  display: grid;
+  gap: 16px;
+  padding-top: 18px;
+}
+
+.artifact-panel h2 {
+  font-size: 24px;
+  margin: 4px 0 0;
+}
+
+.evaluation-table {
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.evaluation-row {
+  align-items: center;
+  border-top: 1px solid var(--hairline);
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr repeat(3, 120px) 1.5fr;
+  padding: 12px 14px;
+}
+
+.evaluation-row:first-child {
+  border-top: 0;
+}
+
+.evaluation-head {
+  background: var(--surface-soft);
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.command-snippet {
+  background: var(--ink);
+  border-radius: 8px;
+  color: white;
+  line-height: 1.55;
+  margin: 0;
+  overflow-x: auto;
+  padding: 14px;
+  white-space: pre-wrap;
+}
+
 .report-grid {
   display: grid;
   gap: 20px;
@@ -282,6 +332,10 @@ select {
 
   .metrics-grid,
   .portfolio-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .evaluation-row {
     grid-template-columns: 1fr 1fr;
   }
 }
