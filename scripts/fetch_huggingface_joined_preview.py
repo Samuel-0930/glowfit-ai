@@ -11,7 +11,14 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.glowfit.huggingface_joined_preview import (  # noqa: E402
     fetch_and_write_joined_huggingface_preview,
+    fetch_huggingface_search_rows,
 )
+from src.glowfit.huggingface_preview import fetch_huggingface_rows  # noqa: E402
+
+
+def _log(message: str, quiet: bool) -> None:
+    if not quiet:
+        print(message, file=sys.stderr, flush=True)
 
 
 def main() -> None:
@@ -28,7 +35,40 @@ def main() -> None:
     parser.add_argument("--review-page-size", type=int, default=25)
     parser.add_argument("--max-review-rows", type=int, default=250)
     parser.add_argument("--metadata-search-length", type=int, default=5)
+    parser.add_argument("--metadata-search-timeout", type=int, default=5)
+    parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args()
+
+    _log(
+        "Fetching ASIN-joined Hugging Face preview "
+        f"(target={args.target_matches}, max_review_rows={args.max_review_rows})",
+        args.quiet,
+    )
+
+    def fetch_rows_with_progress(
+        dataset: str, config: str, split: str, offset: int, length: int
+    ) -> list[dict]:
+        _log(f"Fetching review rows offset={offset} length={length}", args.quiet)
+        rows = fetch_huggingface_rows(dataset, config, split, offset, length)
+        _log(f"Fetched {len(rows)} review rows", args.quiet)
+        return rows
+
+    def search_rows_with_progress(
+        dataset: str, config: str, split: str, query: str, offset: int, length: int
+    ) -> list[dict]:
+        _log(f"Searching metadata ASIN={query}", args.quiet)
+        rows = fetch_huggingface_search_rows(
+            dataset=dataset,
+            config=config,
+            split=split,
+            query=query,
+            offset=offset,
+            length=length,
+            timeout=args.metadata_search_timeout,
+        )
+        status = "match candidates" if rows else "no candidates/timeout"
+        _log(f"Metadata search ASIN={query}: {len(rows)} {status}", args.quiet)
+        return rows
 
     summary = fetch_and_write_joined_huggingface_preview(
         output_dir=args.output_dir,
@@ -41,6 +81,8 @@ def main() -> None:
         review_page_size=args.review_page_size,
         max_review_rows=args.max_review_rows,
         metadata_search_length=args.metadata_search_length,
+        fetch_rows=fetch_rows_with_progress,
+        search_rows=search_rows_with_progress,
     )
     print(json.dumps(summary, indent=2))
 
