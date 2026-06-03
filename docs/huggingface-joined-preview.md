@@ -15,6 +15,15 @@ python scripts/fetch_huggingface_joined_preview.py \
   --output-dir data/processed/hf_joined_preview
 ```
 
+The CLI prints progress to stderr while it pages review rows and searches metadata ASINs. If Hugging Face Dataset Viewer search is slow, lower the per-ASIN timeout:
+
+```bash
+python scripts/fetch_huggingface_joined_preview.py \
+  --target-matches 25 \
+  --max-review-rows 250 \
+  --metadata-search-timeout 3
+```
+
 Expected shape:
 
 ```json
@@ -56,4 +65,4 @@ This step turns the project from a demo fixture into a reproducible public-data 
 
 ## Operational Note
 
-Hugging Face Dataset Viewer search can return a temporary "dataset index is loading" response while a public mirror is being indexed. The local unit tests use fake fetch/search functions so join behavior remains deterministic; live fetches should be treated as smoke tests.
+Hugging Face Dataset Viewer search can return a temporary "dataset index is loading" response or hang until timeout while a public mirror is being indexed. The local unit tests use fake fetch/search functions so join behavior remains deterministic; live fetches should be treated as smoke tests.

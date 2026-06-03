@@ -13,7 +13,7 @@ def test_fetch_huggingface_search_rows_builds_dataset_viewer_request():
 
     def fake_urlopen(url: str, timeout: int):
         seen_urls.append(url)
-        assert timeout == 20
+        assert timeout == 3
         return FakeResponse({"rows": [{"row": {"parent_asin": "B001"}}]})
 
     rows = fetch_huggingface_search_rows(
@@ -24,6 +24,7 @@ def test_fetch_huggingface_search_rows_builds_dataset_viewer_request():
         offset=0,
         length=3,
         urlopen=fake_urlopen,
+        timeout=3,
     )
 
     assert rows == [{"parent_asin": "B001"}]

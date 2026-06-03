@@ -27,6 +27,7 @@ def fetch_huggingface_search_rows(
     offset: int,
     length: int,
     urlopen: Callable[..., Any] = default_urlopen,
+    timeout: int = 20,
 ) -> list[dict[str, Any]]:
     query_string = urlencode(
         {
@@ -40,7 +41,7 @@ def fetch_huggingface_search_rows(
     )
     url = f"{DATASET_VIEWER_BASE_URL}/search?{query_string}"
     try:
-        with urlopen(url, timeout=20) as response:
+        with urlopen(url, timeout=timeout) as response:
             payload = json.loads(response.read().decode("utf-8"))
     except (HTTPError, TimeoutError, URLError):
         return []
