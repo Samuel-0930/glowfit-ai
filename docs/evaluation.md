@@ -49,3 +49,26 @@ Current deterministic sample output:
 - review records -> `Review`
 
 This keeps the API and frontend contracts stable while the data source grows from deterministic fixtures to public review datasets.
+
+## Public Artifact Evaluation
+
+After generating or ingesting a processed artifact directory with `products.json` and `reviews.json`, run:
+
+```bash
+python scripts/evaluate_public_artifacts.py \
+  --artifact-dir data/processed/hf_joined_preview \
+  --output artifacts/public_evaluation.json \
+  --relevant-rating-threshold 4 \
+  --k-values 1,3,5
+```
+
+The public artifact evaluator treats products with at least one review at or above the rating threshold as relevant. It compares these ranking outputs:
+
+- popularity
+- rating
+- collaborative
+- content
+- two_tower
+- hybrid
+
+The output JSON includes product/review counts, the relevance rule, ranked product IDs per model, and precision@k, recall@k, and NDCG@k metrics.

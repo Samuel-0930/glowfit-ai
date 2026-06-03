@@ -30,6 +30,8 @@ The sample ranking evaluation uses a dry, fragrance-sensitive profile and marks 
 | recall@3 | 1.0000 |
 | ndcg@3 | 0.9197 |
 
+Public artifact evaluation now uses the same metrics after processed data is generated. Products with at least one review above the relevance threshold are treated as relevant, and the report compares popularity, rating, collaborative, content, Two-Tower, and hybrid rankers.
+
 ## Product Experience
 
 The demo opens directly to a report-first workspace. A reviewer can see the user profile, top recommendation, evidence snippets, model scores, and product comparison without reading code first.

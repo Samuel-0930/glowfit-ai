@@ -8,6 +8,7 @@
 - `src/glowfit/ingestion.py`: JSONL ingestion pipeline for public-data artifacts.
 - `src/glowfit/huggingface_joined_preview.py`: Hugging Face Dataset Viewer workflow for ASIN-matched public mini datasets.
 - `src/glowfit/evaluation.py`: ranking metrics for offline recommender comparison.
+- `src/glowfit/public_evaluation.py`: processed public artifact evaluation across baseline, core, advanced, and hybrid rankers.
 - `api/`: FastAPI app exposing health, product, recommendation, report, and comparison endpoints.
 - `frontend/`: Next.js report-first workspace using TypeScript contracts that mirror the API responses.
 
