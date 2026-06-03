@@ -8,12 +8,27 @@ Beauty product shoppers often rely on dense review pages to decide whether a pro
 
 Phase 1 uses committed sample fixtures for deterministic development and is designed to scale to public Amazon Beauty-style review data. The current sample set includes product metadata, ratings, review text, and a default user preference profile.
 
+Phase 2 starts that scale-up path with Amazon Beauty-style record adapters and offline recommender metrics. The project can now parse external metadata/review records into the local `Product` and `Review` schemas, then evaluate ranked recommendations with precision@k, recall@k, and NDCG@k.
+
 ## Modeling Progression
 
 1. Baselines: popularity and average rating.
 2. Core models: content-based scoring and collaborative filtering path.
 3. Advanced model: Two-Tower Retrieval for preference-product matching.
 4. Explanation layer: retrieved evidence transformed into a grounded deterministic report.
+
+## Evaluation Snapshot
+
+The sample ranking evaluation uses a dry, fragrance-sensitive profile and marks `p_glow_gel` and `p_calm_ampoule` as relevant products.
+
+| Metric | Value |
+| --- | ---: |
+| precision@1 | 1.0000 |
+| recall@1 | 0.5000 |
+| ndcg@1 | 1.0000 |
+| precision@3 | 0.6667 |
+| recall@3 | 1.0000 |
+| ndcg@3 | 0.9197 |
 
 ## Product Experience
 
