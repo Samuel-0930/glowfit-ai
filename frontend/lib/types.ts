@@ -42,3 +42,18 @@ export type ReportResponse = {
   recommendations: Recommendation[];
   generation_mode: string;
 };
+
+export type PublicEvaluationModel = {
+  ranked_product_ids: string[];
+  metrics: Record<string, number>;
+};
+
+export type PublicEvaluationReport = {
+  artifact_dir: string;
+  product_count: number;
+  review_count: number;
+  relevance_rule: string;
+  relevant_product_ids: string[];
+  k_values: number[];
+  models: Record<string, PublicEvaluationModel>;
+};

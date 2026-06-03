@@ -26,4 +26,16 @@ describe("Page tabs", () => {
       expect(screen.getByText(/모델별 ranking을 어떻게 비교했는가/)).toBeInTheDocument();
     });
   });
+
+  it("shows public evaluation artifact output in experiments", async () => {
+    window.history.replaceState(null, "", "#experiments");
+
+    render(<Page />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/public_evaluation.json 예시/)).toBeInTheDocument();
+    });
+    expect(screen.getByText("hybrid")).toBeInTheDocument();
+    expect(screen.getByText(/python scripts\/evaluate_public_artifacts.py/)).toBeInTheDocument();
+  });
 });
