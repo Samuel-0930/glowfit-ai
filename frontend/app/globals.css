@@ -39,6 +39,10 @@ select {
   padding: 0 24px;
 }
 
+.top-nav strong {
+  flex: 0 0 auto;
+}
+
 .top-nav nav {
   display: flex;
   gap: 16px;
@@ -190,5 +194,36 @@ select {
   .workspace,
   .report-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .top-nav {
+    align-items: flex-start;
+    gap: 12px;
+    height: auto;
+    padding: 14px 24px;
+    flex-direction: column;
+  }
+
+  .top-nav nav {
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    overflow: visible;
+    padding-bottom: 2px;
+    white-space: normal;
+  }
+
+  .top-nav a {
+    flex: 0 0 auto;
+    font-size: 13px;
+  }
+
+  .workspace {
+    padding: 24px;
+  }
+
+  .product-card {
+    grid-template-columns: 72px minmax(0, 1fr) auto;
   }
 }
