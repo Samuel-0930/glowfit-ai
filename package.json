@@ -1,0 +1,10 @@
+{
+  "name": "glowfit-ai-workspace",
+  "private": true,
+  "scripts": {
+    "test": "pytest && npm --prefix frontend test",
+    "lint": "ruff check . && npm --prefix frontend run lint",
+    "api:dev": "uvicorn api.main:app --reload --port 8000",
+    "frontend:dev": "npm --prefix frontend run dev"
+  }
+}
