@@ -8,7 +8,7 @@ Beauty product shoppers often rely on dense review pages to decide whether a pro
 
 Phase 1 uses committed sample fixtures for deterministic development and is designed to scale to public Amazon Beauty-style review data. The current sample set includes product metadata, ratings, review text, and a default user preference profile.
 
-Phase 2 starts that scale-up path with Amazon Beauty-style record adapters, a JSONL ingestion pipeline, Hugging Face Dataset Viewer preview fetches, and offline recommender metrics. The project can now parse external metadata/review records into the local `Product` and `Review` schemas, write processed artifacts, then evaluate ranked recommendations with precision@k, recall@k, and NDCG@k.
+Phase 2 starts that scale-up path with Amazon Beauty-style record adapters, a JSONL ingestion pipeline, Hugging Face Dataset Viewer preview fetches, ASIN-joined public mini datasets, and offline recommender metrics. The project can now parse external metadata/review records into the local `Product` and `Review` schemas, write processed artifacts, align public reviews to product metadata, then evaluate ranked recommendations with precision@k, recall@k, and NDCG@k.
 
 ## Modeling Progression
 
@@ -36,7 +36,7 @@ The demo opens directly to a report-first workspace. A reviewer can see the user
 
 ## Phase 2
 
-- Public dataset pipeline.
+- Public dataset pipeline with joined evaluation-ready artifacts.
 - Experiment tracking.
 - Real LLM/RAG report generation.
 - Deployment and monitoring.

@@ -43,3 +43,5 @@ Expected output:
 Raw and processed public data are intentionally ignored by Git.
 
 For a lightweight public-data smoke test without downloading large files, use `scripts/fetch_huggingface_preview.py`.
+
+For evaluation-ready public mini datasets, use `scripts/fetch_huggingface_joined_preview.py` to search metadata by review ASIN and keep only matched product/review pairs.
