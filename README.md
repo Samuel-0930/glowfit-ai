@@ -56,6 +56,14 @@ python scripts/fetch_huggingface_joined_preview.py \
   --max-review-rows 250
 ```
 
+Evaluate processed public-data artifacts:
+
+```bash
+python scripts/evaluate_public_artifacts.py \
+  --artifact-dir data/processed/hf_joined_preview \
+  --output artifacts/public_evaluation.json
+```
+
 ```bash
 python scripts/evaluate_sample_recommenders.py
 ```

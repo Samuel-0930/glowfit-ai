@@ -32,6 +32,16 @@ Expected shape:
 
 The exact scan/search counts depend on Dataset Viewer index availability and the public mirror contents.
 
+## Evaluate Joined Artifacts
+
+Once the joined artifact directory contains matched products and reviews, evaluate the model rankings:
+
+```bash
+python scripts/evaluate_public_artifacts.py \
+  --artifact-dir data/processed/hf_joined_preview \
+  --output artifacts/public_evaluation.json
+```
+
 ## Method
 
 1. Page review rows from `jhan21/amazon-beauty-reviews-dataset`.
