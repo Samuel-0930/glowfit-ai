@@ -23,6 +23,20 @@ def test_parse_amazon_metadata_record_maps_catalog_fields():
     assert product.attributes == ["fragrance free", "light texture", "dry skin"]
 
 
+def test_parse_amazon_metadata_record_cleans_missing_text_values():
+    record = {
+        "parent_asin": "B001",
+        "title": "nan",
+        "store": "nan",
+        "categories": ["Beauty"],
+    }
+
+    product = parse_amazon_metadata_record(record)
+
+    assert product.name == "B001"
+    assert product.brand == "Unknown"
+
+
 def test_parse_amazon_review_record_maps_review_fields():
     record = {
         "reviewerID": "A1",

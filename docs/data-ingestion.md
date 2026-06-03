@@ -41,3 +41,5 @@ Expected output:
 4. Point future training or evaluation scripts at the processed directory.
 
 Raw and processed public data are intentionally ignored by Git.
+
+For a lightweight public-data smoke test without downloading large files, use `scripts/fetch_huggingface_preview.py`.

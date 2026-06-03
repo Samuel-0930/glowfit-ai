@@ -16,6 +16,13 @@ def _clean_price(value: Any) -> float:
     return float(match.group(0)) if match else 0.0
 
 
+def _clean_text(value: Any, fallback: str) -> str:
+    if value is None:
+        return fallback
+    text = str(value).strip()
+    return fallback if not text or text.lower() in {"nan", "none", "null"} else text
+
+
 def _category_from_record(record: dict[str, Any]) -> str:
     categories = record.get("categories") or record.get("category") or []
     if isinstance(categories, list) and categories:
@@ -29,16 +36,17 @@ def _category_from_record(record: dict[str, Any]) -> str:
 def _attributes_from_record(record: dict[str, Any]) -> list[str]:
     raw_features = record.get("features") or record.get("description") or []
     if isinstance(raw_features, str):
-        raw_features = [raw_features]
+        raw_features = re.split(r"[.;\n]+", raw_features)
     return [str(feature).strip().lower() for feature in raw_features if str(feature).strip()]
 
 
 def parse_amazon_metadata_record(record: dict[str, Any]) -> Product:
+    product_id = str(record.get("asin") or record.get("parent_asin"))
     return Product(
-        product_id=str(record["asin"]),
-        name=str(record.get("title") or record.get("name") or record["asin"]),
+        product_id=product_id,
+        name=_clean_text(record.get("title") or record.get("name"), product_id),
         category=_category_from_record(record),
-        brand=str(record.get("brand") or "Unknown"),
+        brand=_clean_text(record.get("brand") or record.get("store"), "Unknown"),
         price_usd=_clean_price(record.get("price")),
         average_rating=float(record.get("average_rating") or record.get("rating") or 0.0),
         review_count=int(record.get("rating_number") or record.get("review_count") or 0),

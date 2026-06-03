@@ -42,6 +42,12 @@ python scripts/ingest_amazon_beauty_jsonl.py \
 
 Generated files are written under ignored `data/processed/` paths so large public artifacts stay out of Git.
 
+Fetch a small public Hugging Face preview:
+
+```bash
+python scripts/fetch_huggingface_preview.py --length 25
+```
+
 ```bash
 python scripts/evaluate_sample_recommenders.py
 ```
@@ -93,5 +99,6 @@ Open `http://localhost:3000`.
 - Frontend design system: `DESIGN.md`
 - Architecture notes: `docs/architecture.md`
 - Data ingestion notes: `docs/data-ingestion.md`
+- Hugging Face preview notes: `docs/huggingface-preview.md`
 - Evaluation notes: `docs/evaluation.md`
 - Portfolio case study draft: `docs/portfolio-case-study.md`
