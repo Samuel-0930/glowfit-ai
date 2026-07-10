@@ -8,8 +8,9 @@ tags, and reviews from Supabase instead.
 
 1. Start the Supabase stack with `npx supabase start`.
 2. Apply the repository migration and seed with `npx supabase db reset`.
-3. Copy the local API URL and service-role key into a local `.env` file.
-4. Set `GLOWFIT_CATALOG_SOURCE=supabase` before starting the API server.
+3. Copy the project API URL and service-role key into a local `.env` file.
+4. Set `GLOWFIT_CATALOG_SOURCE=supabase` in that file.
+5. Start the API server with `uvicorn api.main:app --env-file .env --reload --port 8000`.
 
 The service-role key belongs only in the API server environment. Do not put it
 in the frontend or any `NEXT_PUBLIC_*` variable.
