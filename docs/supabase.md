@@ -8,12 +8,19 @@ tags, and reviews from Supabase instead.
 
 1. Start the Supabase stack with `npx supabase start`.
 2. Apply the repository migration and seed with `npx supabase db reset`.
-3. Copy the project API URL and service-role key into a local `.env` file.
-4. Set `GLOWFIT_CATALOG_SOURCE=supabase` in that file.
-5. Start the API server with `uvicorn api.main:app --env-file .env --reload --port 8000`.
+3. In Supabase Dashboard, open **Settings > API Keys** and create or reveal a
+   key in the **Secret keys** section.
+4. Register the project API URL and that key in a local `.env` file as
+   `SUPABASE_URL` and `SUPABASE_SECRET_KEY`.
+5. Set `GLOWFIT_CATALOG_SOURCE=supabase` in that file.
+6. Start the API server with `uvicorn api.main:app --env-file .env --reload --port 8000`.
 
-The service-role key belongs only in the API server environment. Do not put it
-in the frontend or any `NEXT_PUBLIC_*` variable.
+For an older project that only has legacy JWT keys, use the `service_role`
+value as `SUPABASE_SERVICE_ROLE_KEY` instead. The repository supports both
+formats, but new Secret keys are preferred.
+
+Secret and service-role keys belong only in the API server environment. Do not
+put either value in the frontend or any `NEXT_PUBLIC_*` variable.
 
 ## Schema
 

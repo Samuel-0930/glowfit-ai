@@ -83,15 +83,44 @@ def test_supabase_catalog_repository_rebuilds_product_attributes(
     def fake_urlopen(request: Any, timeout: int) -> FakeResponse:
         table = request.full_url.split("/rest/v1/")[1].split("?")[0]
         assert timeout == 10
-        assert request.headers["Apikey"] == "service-role-key"
+        assert request.headers["Apikey"] == "sb_secret_test-key"
+        assert "Authorization" not in request.headers
         return FakeResponse(payloads[table])
 
     monkeypatch.setattr("src.glowfit.catalog.urlopen", fake_urlopen)
 
     catalog = SupabaseCatalogRepository(
-        url="https://example.supabase.co", service_role_key="service-role-key"
+        url="https://example.supabase.co", api_key="sb_secret_test-key"
     ).load()
 
     assert catalog.source == "supabase"
     assert catalog.products[0].attributes == ["dry skin", "fragrance free"]
     assert catalog.reviews[0].timestamp == "2025-01-01"
+
+
+def test_supabase_catalog_repository_uses_bearer_header_for_legacy_key(
+    monkeypatch: Any,
+) -> None:
+    class FakeResponse:
+        def __enter__(self) -> FakeResponse:
+            return self
+
+        def __exit__(self, *_: object) -> None:
+            return None
+
+        def read(self) -> bytes:
+            return b"[]"
+
+    def fake_urlopen(request: Any, timeout: int) -> FakeResponse:
+        assert timeout == 10
+        assert request.headers["Authorization"] == "Bearer legacy-service-role-key"
+        return FakeResponse()
+
+    monkeypatch.setattr("src.glowfit.catalog.urlopen", fake_urlopen)
+
+    catalog = SupabaseCatalogRepository(
+        url="https://example.supabase.co", api_key="legacy-service-role-key"
+    ).load()
+
+    assert catalog.products == ()
+    assert catalog.reviews == ()

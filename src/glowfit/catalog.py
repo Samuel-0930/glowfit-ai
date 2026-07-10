@@ -38,16 +38,16 @@ class JsonCatalogRepository:
 @dataclass(frozen=True)
 class SupabaseCatalogRepository:
     url: str
-    service_role_key: str
+    api_key: str
 
     def _select(self, table: str, columns: str) -> list[dict[str, object]]:
         query = urlencode({"select": columns})
+        headers = {"apikey": self.api_key}
+        if not self.api_key.startswith("sb_secret_"):
+            headers["Authorization"] = f"Bearer {self.api_key}"
         request = Request(
             f"{self.url.rstrip('/')}/rest/v1/{table}?{query}",
-            headers={
-                "apikey": self.service_role_key,
-                "Authorization": f"Bearer {self.service_role_key}",
-            },
+            headers=headers,
         )
         with urlopen(request, timeout=10) as response:  # noqa: S310 - configured Supabase URL
             payload = json.loads(response.read().decode("utf-8"))
@@ -99,10 +99,10 @@ def get_catalog_repository() -> CatalogRepository:
         raise ValueError("GLOWFIT_CATALOG_SOURCE must be either 'json' or 'supabase'")
 
     url = os.getenv("SUPABASE_URL")
-    service_role_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
-    if not url or not service_role_key:
+    api_key = os.getenv("SUPABASE_SECRET_KEY") or os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+    if not url or not api_key:
         raise RuntimeError(
-            "SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required when "
+            "SUPABASE_URL and SUPABASE_SECRET_KEY or SUPABASE_SERVICE_ROLE_KEY are required when "
             "GLOWFIT_CATALOG_SOURCE=supabase"
         )
-    return SupabaseCatalogRepository(url=url, service_role_key=service_role_key)
+    return SupabaseCatalogRepository(url=url, api_key=api_key)
