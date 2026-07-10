@@ -31,6 +31,31 @@ def test_recommend_endpoint_returns_top_products():
     assert body["recommendations"][0]["evidence"]
 
 
+def test_recommendations_endpoint_returns_report_contract():
+    payload = {
+        "preferences": {
+            "skin_type": "dry",
+            "concerns": ["redness", "barrier care"],
+            "texture": "light",
+            "fragrance_sensitivity": "high",
+            "budget_max_usd": 25,
+            "avoid": ["strong scent", "sticky finish"],
+        },
+        "limit": 2,
+    }
+
+    response = client.post("/recommendations", json=payload)
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["generation_mode"] == "api-hybrid-ranking"
+    assert body["metadata"]["data_source"] == "sample_data"
+    assert body["metadata"]["requested_limit"] == 2
+    assert body["metadata"]["returned_count"] == 2
+    assert body["metadata"]["top_product_id"] == "p_glow_gel"
+    assert body["recommendations"][0]["model_scores"]["two_tower"] >= 0
+
+
 def test_report_endpoint_returns_grounded_sections():
     payload = {
         "skin_type": "dry",

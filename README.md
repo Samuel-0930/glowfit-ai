@@ -88,6 +88,24 @@ API 실행:
 uvicorn api.main:app --reload --port 8000
 ```
 
+추천 API 호출:
+
+```bash
+curl -X POST http://localhost:8000/recommendations \
+  -H "Content-Type: application/json" \
+  -d '{
+    "preferences": {
+      "skin_type": "dry",
+      "concerns": ["redness", "barrier care"],
+      "texture": "light",
+      "fragrance_sensitivity": "high",
+      "budget_max_usd": 25,
+      "avoid": ["strong scent", "sticky finish"]
+    },
+    "limit": 3
+  }'
+```
+
 Frontend 실행:
 
 ```bash
