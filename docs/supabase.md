@@ -13,7 +13,8 @@ tags, and reviews from Supabase instead.
 4. Register the project API URL and that key in a local `.env` file as
    `SUPABASE_URL` and `SUPABASE_SECRET_KEY`.
 5. Set `GLOWFIT_CATALOG_SOURCE=supabase` in that file.
-6. Start the API server with `uvicorn api.main:app --env-file .env --reload --port 8000`.
+6. Set `GLOWFIT_CORS_ORIGINS=http://localhost:3000` for the local frontend.
+7. Start the API server with `uvicorn api.main:app --env-file .env --reload --port 8000`.
 
 For an older project that only has legacy JWT keys, use the `service_role`
 value as `SUPABASE_SERVICE_ROLE_KEY` instead. The repository supports both
