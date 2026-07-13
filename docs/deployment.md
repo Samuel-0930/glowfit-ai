@@ -71,3 +71,15 @@ serverless instances. Do not add an in-memory application limiter as a substitut
 
 Cloudflare is optional until you own a custom domain. A `*.vercel.app` URL cannot be proxied through
 your Cloudflare zone, so use Vercel Firewall first.
+
+## CI/CD flow
+
+GitHub Actions runs the same checks as local development for every pull request and every push to
+`main`: Python lint/tests plus frontend tests/build. A manual `workflow_dispatch` trigger is also
+available from the Actions tab. Runs for superseded commits on the same branch are cancelled to keep
+the free GitHub Actions quota focused on the latest change.
+
+Vercel is the CD step: both Vercel projects are connected to this repository, so a successful push to
+`main` creates production deployments for the API and frontend. Pull requests receive Vercel preview
+deployments automatically. GitHub Actions and Vercel run independently, so review the CI check and the
+Vercel deployment status before merging important changes.
