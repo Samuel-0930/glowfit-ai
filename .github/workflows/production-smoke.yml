@@ -1,0 +1,35 @@
+name: Production smoke
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: production-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify public deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Wait for Vercel and verify frontend plus API
+        env:
+          API_BASE_URL: https://glowfit-api.vercel.app
+          FRONTEND_URL: https://glowfit-web.vercel.app
+        run: |
+          for attempt in $(seq 1 12); do
+            if python scripts/smoke_deployment.py \
+              --api-base-url "$API_BASE_URL" \
+              --frontend-url "$FRONTEND_URL"; then
+              exit 0
+            fi
+            echo "Deployment is not ready yet (attempt $attempt/12)."
+            sleep 15
+          done
+          exit 1

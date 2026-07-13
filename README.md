@@ -191,6 +191,9 @@ API는 Vercel Python Runtime의 `api/index.py` 진입점을 사용하며, 요청
 Vercel Firewall에서 적용합니다. 환경 변수와 Firewall 규칙은 [배포 체크리스트](docs/deployment.md)를
 따릅니다.
 
+`main` 배포 후에는 GitHub Actions가 공개 프론트엔드와 API를 실제 요청으로 확인하는 smoke check를
+수행합니다. 배포 상태는 Vercel 체크와 함께 확인합니다.
+
 ## 문서
 
 - Architecture: [docs/architecture.md](docs/architecture.md)

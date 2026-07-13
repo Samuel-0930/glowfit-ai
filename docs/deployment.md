@@ -83,3 +83,9 @@ Vercel is the CD step: both Vercel projects are connected to this repository, so
 `main` creates production deployments for the API and frontend. Pull requests receive Vercel preview
 deployments automatically. GitHub Actions and Vercel run independently, so review the CI check and the
 Vercel deployment status before merging important changes.
+
+`Production smoke` runs after every push to `main` and retries the public API/frontend checks for up to
+three minutes. It verifies `/health`, a real `/recommendations` request, the `evidence_strength` and
+`hash_similarity` response contract, and the frontend home page. It uses public URLs only, so it needs no
+deployment token. Enable GitHub branch protection with both CI and Vercel deployment checks required; the
+smoke job is post-deploy verification rather than a replacement for Vercel's own deployment status.
