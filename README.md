@@ -13,7 +13,7 @@ GlowFit AI는 화장품 리뷰와 상품 속성 데이터를 기반으로 사용
 | 화면 | 역할 |
 | --- | --- |
 | 추천 | 사용자가 피부 조건을 직접 선택하고 상위 3개 제품을 추천받습니다. |
-| 비교 | fit·confidence 원형 점수, 근거·주의 항목, 모델별 랭킹 신호를 비교합니다. |
+| 비교 | fit·근거 강도 원형 점수, 근거·주의 항목, 모델별 랭킹 신호를 비교합니다. |
 | 리뷰 분석 | 추천에 사용된 리뷰 snippet과 aspect coverage를 확인합니다. |
 | 실험 | 커밋된 샘플 카탈로그를 기준으로 재생성한 오프라인 평가 결과를 확인합니다. |
 
@@ -36,7 +36,7 @@ flowchart LR
 | 입력 자유도 | 피부 타입, concerns, texture, fragrance sensitivity, budget, avoid 조건을 직접 선택 |
 | 동적 랭킹 | FastAPI가 입력 profile과 상품 tag, 리뷰 evidence, 예산 조건을 조합해 score 계산 |
 | 설명 가능성 | 추천 결과마다 reasons, cautions, evidence snippet, model signal을 함께 표시 |
-| 비교 UX | fit/confidence를 원형 score로 보여주고, model signal은 동적 bar로 비교 |
+| 비교 UX | fit score와 리뷰 근거 개수 기반의 근거 강도를 원형 score로 보여주고, model signal은 동적 bar로 비교 |
 | 한국어 정보 구조 | 탐색, 입력, 안내 문구는 한국어로 제공하고 카탈로그 원문과 리뷰 근거는 보존 |
 | 검증 | Next build, Vitest, Python test suite, ranking evaluation script |
 
@@ -75,10 +75,10 @@ flowchart TB
 | --- | --- |
 | popularity | 상품의 `review_count`를 정규화한 베이스라인 |
 | rating | 상품의 `average_rating`을 정규화한 베이스라인 |
-| collaborative | 사용자-아이템 행렬 학습이 아닌, 관측 리뷰 평점 평균 베이스라인 |
+| review_average | 관측 리뷰 평점 평균 베이스라인 |
 | content | 프로필-상품 tag 겹침에 예산 보너스와 회피 조건 패널티를 더한 점수 |
-| two_tower | 학습된 two-tower가 아닌 해시 기반 텍스트 벡터 코사인 유사도 베이스라인 |
-| fit score | content 0.40, two_tower 0.30, collaborative 0.15, popularity 0.10, 리뷰 근거 보너스를 합친 최종 순위 점수 |
+| hash_similarity | 해시 기반 텍스트 벡터 코사인 유사도 베이스라인 |
+| fit score | content 0.40, hash_similarity 0.30, review_average 0.15, popularity 0.10, 리뷰 근거 보너스를 합친 최종 순위 점수 |
 
 ## 실행 방법
 

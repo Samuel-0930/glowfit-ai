@@ -48,9 +48,9 @@ export function ProductComparison({ recommendations }: { recommendations: Recomm
                 <strong>{Math.round(item.fit_score * 100)}</strong>
                 <span>fit</span>
               </div>
-              <div className="score-circle large" style={{ "--score": item.confidence } as CSSProperties}>
-                <strong>{Math.round(item.confidence * 100)}</strong>
-                <span>confidence</span>
+              <div className="score-circle large" style={{ "--score": item.evidence_strength } as CSSProperties}>
+                <strong>{Math.round(item.evidence_strength * 100)}</strong>
+                <span>근거 강도</span>
               </div>
             </div>
             <div className="mini-section">

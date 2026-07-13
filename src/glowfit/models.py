@@ -66,7 +66,7 @@ class ContentBasedRecommender:
         return _normalize(scores)
 
 
-class CollaborativeFilteringRecommender:
+class ReviewAverageRecommender:
     def score(self, products: list[Product], reviews: list[Review]) -> list[tuple[str, float]]:
         rating_totals: dict[str, list[int]] = defaultdict(list)
         for review in reviews:
@@ -82,7 +82,7 @@ class CollaborativeFilteringRecommender:
         return _normalize(scores)
 
 
-class TwoTowerRetrieval:
+class HashVectorSimilarityRecommender:
     def __init__(self, embedding_dim: int = 16) -> None:
         self.embedding_dim = embedding_dim
 

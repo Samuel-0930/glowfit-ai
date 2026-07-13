@@ -66,9 +66,9 @@ The public artifact evaluator treats products with at least one review at or abo
 
 - popularity
 - rating
-- collaborative
+- review_average
 - content
-- two_tower
+- hash_similarity
 - hybrid
 
 The output JSON includes product/review counts, the relevance rule, ranked product IDs per model, and precision@k, recall@k, and NDCG@k metrics.

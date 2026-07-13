@@ -82,9 +82,9 @@ def test_build_public_artifact_evaluation_report_uses_review_threshold(tmp_path:
     assert set(report["models"]) == {
         "popularity",
         "rating",
-        "collaborative",
+        "review_average",
         "content",
-        "two_tower",
+        "hash_similarity",
         "hybrid",
     }
 

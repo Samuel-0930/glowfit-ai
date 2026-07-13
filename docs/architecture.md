@@ -26,7 +26,7 @@
 5. Review NLP extracts aspects and sentiment labels from review text.
 6. Evidence index retrieves review snippets for a product and preference query.
 7. Deterministic baselines score products with popularity, rating, tag-based content matching,
-   review-average "collaborative" scoring, and hash-vector retrieval similarity.
+   review-average scoring, and hash-vector retrieval similarity.
 8. Hybrid rank combines model scores and evidence availability into `Recommendation` objects.
 9. Offline evaluation measures the ranked product IDs against relevant products using precision, recall, and NDCG.
 10. The API caches the loaded catalog for `GLOWFIT_CATALOG_CACHE_TTL_SECONDS` (60 seconds by

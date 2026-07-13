@@ -27,7 +27,7 @@ export const samplePublicEvaluation: PublicEvaluationReport = {
       ranked_product_ids: ["p_glow_gel", "p_calm_ampoule", "p_velvet_sunscreen"],
       metrics: { "precision@1": 1, "recall@3": 1, "ndcg@3": 1 }
     },
-    collaborative: {
+    review_average: {
       ranked_product_ids: ["p_glow_gel", "p_calm_ampoule", "p_velvet_sunscreen"],
       metrics: { "precision@1": 1, "recall@3": 1, "ndcg@3": 1 }
     },
@@ -35,7 +35,7 @@ export const samplePublicEvaluation: PublicEvaluationReport = {
       ranked_product_ids: ["p_glow_gel", "p_calm_ampoule", "p_velvet_sunscreen"],
       metrics: { "precision@1": 1, "recall@3": 1, "ndcg@3": 1 }
     },
-    two_tower: {
+    hash_similarity: {
       ranked_product_ids: ["p_glow_gel", "p_velvet_sunscreen", "p_calm_ampoule"],
       metrics: { "precision@1": 1, "recall@3": 1, "ndcg@3": 1 }
     },

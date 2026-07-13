@@ -31,7 +31,7 @@ The sample ranking evaluation uses a dry, fragrance-sensitive profile and marks 
 | recall@3 | 1.0000 |
 | ndcg@3 | 0.9197 |
 
-Public artifact evaluation now uses the same metrics after processed data is generated. Products with at least one review above the relevance threshold are treated as relevant, and the report compares popularity, rating, collaborative, content, Two-Tower, and hybrid rankers.
+Public artifact evaluation now uses the same metrics after processed data is generated. Products with at least one review above the relevance threshold are treated as relevant, and the report compares popularity, rating, review-average, content, hash-vector similarity, and hybrid rankers.
 
 The committed three-product artifact is deliberately an exploratory fixture, not a benchmark. Its current
 relevance rule labels all three products relevant, so the UI and JSON report mark the run as

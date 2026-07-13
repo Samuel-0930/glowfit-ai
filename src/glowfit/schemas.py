@@ -52,7 +52,7 @@ class EvidenceSnippet(BaseModel):
 class Recommendation(BaseModel):
     product: Product
     fit_score: float
-    confidence: float
+    evidence_strength: float
     reasons: list[str]
     cautions: list[str]
     evidence: list[EvidenceSnippet]

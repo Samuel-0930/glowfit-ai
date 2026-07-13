@@ -9,9 +9,9 @@ const modelLabels: Record<string, string> = {
   hybrid: "종합 점수",
   popularity: "인기도",
   rating: "평점",
-  collaborative: "리뷰 패턴",
+  review_average: "리뷰 평균 평점",
   content: "조건 적합도",
-  two_tower: "텍스트 유사도"
+  hash_similarity: "해시 텍스트 유사도"
 };
 
 export function RecommendationReport({ report }: { report: ReportResponse | null }) {

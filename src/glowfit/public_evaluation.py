@@ -8,11 +8,11 @@ from src.glowfit.data import load_products, load_reviews
 from src.glowfit.evaluation import evaluate_ranked_product_ids
 from src.glowfit.evidence import EvidenceIndex
 from src.glowfit.models import (
-    CollaborativeFilteringRecommender,
     ContentBasedRecommender,
+    HashVectorSimilarityRecommender,
     PopularityRecommender,
     RatingRecommender,
-    TwoTowerRetrieval,
+    ReviewAverageRecommender,
 )
 from src.glowfit.ranking import recommend
 from src.glowfit.schemas import Product, Review, UserPreferences
@@ -78,11 +78,13 @@ def _model_rankings(
     return {
         "popularity": _ranked_ids_from_scores(PopularityRecommender().score(products)),
         "rating": _ranked_ids_from_scores(RatingRecommender().score(products)),
-        "collaborative": _ranked_ids_from_scores(
-            CollaborativeFilteringRecommender().score(products, reviews)
+        "review_average": _ranked_ids_from_scores(
+            ReviewAverageRecommender().score(products, reviews)
         ),
         "content": _ranked_ids_from_scores(ContentBasedRecommender().score(products, preferences)),
-        "two_tower": _ranked_ids_from_scores(TwoTowerRetrieval().score(products, preferences)),
+        "hash_similarity": _ranked_ids_from_scores(
+            HashVectorSimilarityRecommender().score(products, preferences)
+        ),
         "hybrid": [
             item.product.product_id
             for item in recommend(products, preferences, evidence_index, limit=len(products))

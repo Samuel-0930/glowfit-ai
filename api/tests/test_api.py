@@ -176,7 +176,8 @@ def test_recommendations_endpoint_returns_report_contract():
     assert body["metadata"]["requested_limit"] == 2
     assert body["metadata"]["returned_count"] == 2
     assert body["metadata"]["top_product_id"] == "p_glow_gel"
-    assert body["recommendations"][0]["model_scores"]["two_tower"] >= 0
+    assert body["recommendations"][0]["model_scores"]["hash_similarity"] >= 0
+    assert body["recommendations"][0]["evidence_strength"] >= 0
 
 
 def test_report_endpoint_returns_grounded_sections():

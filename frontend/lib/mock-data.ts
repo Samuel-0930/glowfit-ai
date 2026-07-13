@@ -249,7 +249,7 @@ export function inferRecommendations(preferences: UserPreferences): ReportRespon
       return {
         product,
         fit_score: result.score,
-        confidence: Math.min(0.94, 0.58 + result.score * 0.36),
+        evidence_strength: Math.min(0.94, 0.58 + result.score * 0.36),
         reasons: result.reasons.length ? result.reasons : ["balanced rating", "review evidence"],
         cautions: result.cautions,
         evidence,
@@ -313,7 +313,7 @@ export const mockPublicEvaluation: PublicEvaluationReport = {
         "ndcg@3": 0.871
       }
     },
-    two_tower: {
+    hash_similarity: {
       ranked_product_ids: ["B003", "B002", "B001"],
       metrics: {
         "precision@1": 1,

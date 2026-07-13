@@ -20,7 +20,7 @@ Both modes should share the same design system so the product feels coherent.
 - Surfaces: light by default, with warm off-white page backgrounds and white panels.
 - Accent behavior: use mint/pistachio sparingly for selected states, positive matches, and recommendation highlights.
 - Product imagery: use real or realistic product imagery when available. Product visuals should be inspectable, bright, and not overly cropped or blurred.
-- AI presence: show AI through structured reports, evidence, and confidence signals, not through decorative gradients or abstract blobs.
+- AI presence: show AI through structured reports, evidence, and evidence-strength signals, not through decorative gradients or abstract blobs.
 
 ## Color Palette
 
@@ -106,7 +106,7 @@ Desktop layout:
 
 - Left column: preference controls and saved profiles.
 - Center column: recommendation report and Top 3 products.
-- Right column: evidence panel with review quotes, sentiment/aspect tags, model signals, and confidence indicators.
+- Right column: evidence panel with review quotes, sentiment/aspect tags, model signals, and evidence-strength indicators.
 
 Recommended proportions:
 
@@ -197,7 +197,7 @@ The report is the hero artifact of the app. It should include:
 
 - A short summary sentence.
 - Top 3 recommended products.
-- Fit score and confidence.
+- Fit score and evidence strength.
 - Why it matches the user's preferences.
 - Review evidence.
 - Pros, cons, and cautions.
@@ -266,7 +266,7 @@ Include:
 Model comparison should be presented as a clear progression:
 
 - Baseline: popularity, average rating, simple content similarity.
-- Core: content-based recommendation and collaborative filtering.
+- Core: content-based recommendation, review-average baseline, and hash-vector similarity baseline.
 - Advanced: Two-Tower Retrieval using user preference embeddings and product/review embeddings.
 - Explanation: retrieved review evidence plus LLM/RAG-generated report text.
 

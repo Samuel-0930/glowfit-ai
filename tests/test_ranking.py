@@ -19,5 +19,6 @@ def test_recommend_returns_ranked_recommendations_with_evidence():
     assert all(0 <= recommendation.fit_score <= 1 for recommendation in recommendations)
     assert recommendations[0].evidence
     assert "content" in recommendations[0].model_scores
-    assert "collaborative" in recommendations[0].model_scores
-    assert "two_tower" in recommendations[0].model_scores
+    assert "review_average" in recommendations[0].model_scores
+    assert "hash_similarity" in recommendations[0].model_scores
+    assert 0 <= recommendations[0].evidence_strength <= 1

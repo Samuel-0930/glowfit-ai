@@ -21,7 +21,7 @@ export type EvidenceSnippet = {
 export type Recommendation = {
   product: Product;
   fit_score: number;
-  confidence: number;
+  evidence_strength: number;
   reasons: string[];
   cautions: string[];
   evidence: EvidenceSnippet[];
