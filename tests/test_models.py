@@ -8,6 +8,7 @@ from src.glowfit.models import (
     RatingRecommender,
     TwoTowerRetrieval,
 )
+from src.glowfit.schemas import Product, UserPreferences
 
 
 def test_popularity_recommender_orders_by_review_count():
@@ -52,3 +53,42 @@ def test_two_tower_retrieval_returns_normalized_scores():
 
     assert len(ranked) == 3
     assert all(0 <= score <= 1 for _, score in ranked)
+
+
+def test_avoid_terms_do_not_increase_positive_match_scores():
+    products = [
+        Product(
+            product_id="safe",
+            name="Plain Serum",
+            category="serum",
+            brand="A",
+            price_usd=10,
+            average_rating=4,
+            review_count=10,
+            attributes=["fragrance free"],
+        ),
+        Product(
+            product_id="avoid",
+            name="Scent Serum",
+            category="serum",
+            brand="B",
+            price_usd=10,
+            average_rating=4,
+            review_count=10,
+            attributes=["strong scent"],
+        ),
+    ]
+    preferences = UserPreferences(
+        skin_type="dry",
+        concerns=[],
+        texture="light",
+        fragrance_sensitivity="high",
+        budget_max_usd=20,
+        avoid=["strong scent"],
+    )
+
+    content_scores = dict(ContentBasedRecommender().score(products, preferences))
+    similarity_scores = dict(TwoTowerRetrieval(embedding_dim=64).score(products, preferences))
+
+    assert content_scores["safe"] > content_scores["avoid"]
+    assert similarity_scores["safe"] > similarity_scores["avoid"]

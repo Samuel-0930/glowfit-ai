@@ -36,9 +36,6 @@ def _tokenize_preferences(preferences: UserPreferences) -> set[str]:
     for concern in preferences.concerns:
         tokens.update(concern.lower().split())
         tokens.add(concern.lower())
-    for avoid in preferences.avoid:
-        tokens.update(avoid.lower().split())
-        tokens.add(avoid.lower())
     if preferences.fragrance_sensitivity == "high":
         tokens.add("fragrance free")
     return tokens
@@ -101,9 +98,7 @@ class TwoTowerRetrieval:
     def score(
         self, products: list[Product], preferences: UserPreferences
     ) -> list[tuple[str, float]]:
-        preference_text = " ".join(
-            [preferences.skin_type, preferences.texture, *preferences.concerns, *preferences.avoid]
-        )
+        preference_text = " ".join(sorted(_tokenize_preferences(preferences)))
         user_vector = self._embed_text(preference_text)
         scores: dict[str, float] = {}
         for product in products:
