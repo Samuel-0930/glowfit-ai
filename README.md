@@ -147,6 +147,7 @@ ASIN 기준으로 상품과 리뷰가 매칭된 public mini dataset 생성:
 ```bash
 python3 scripts/fetch_huggingface_joined_preview.py \
   --target-matches 25 \
+  --min-reviews-per-product 3 \
   --max-review-rows 250
 ```
 

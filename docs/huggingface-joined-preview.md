@@ -11,6 +11,7 @@ That makes the output useful for ranking evaluation, evidence retrieval checks, 
 ```bash
 python scripts/fetch_huggingface_joined_preview.py \
   --target-matches 25 \
+  --min-reviews-per-product 3 \
   --max-review-rows 250 \
   --output-dir data/processed/hf_joined_preview
 ```
@@ -32,7 +33,7 @@ Expected shape:
   "review_rows_scanned": 250,
   "metadata_searches": 120,
   "products_written": 25,
-  "reviews_written": 25,
+  "reviews_written": 75,
   "products_path": "data/processed/hf_joined_preview/products.json",
   "reviews_path": "data/processed/hf_joined_preview/reviews.json",
   "summary_path": "data/processed/hf_joined_preview/summary.json"
@@ -56,8 +57,9 @@ python scripts/evaluate_public_artifacts.py \
 1. Page review rows from `jhan21/amazon-beauty-reviews-dataset`.
 2. Extract each review ASIN.
 3. Query `smartcat/Amazon_All_Beauty_2023` through the Dataset Viewer `/search` endpoint.
-4. Keep only exact ASIN metadata matches.
-5. Write `products.json`, `reviews.json`, and `summary.json` under ignored `data/processed/`.
+4. Keep only exact ASIN metadata matches and retain multiple matched reviews per product.
+5. Continue scanning until each matched product has the requested minimum number of reviews, or the scan limit is reached.
+6. Write `products.json`, `reviews.json`, and `summary.json` under ignored `data/processed/`.
 
 ## Portfolio Value
 

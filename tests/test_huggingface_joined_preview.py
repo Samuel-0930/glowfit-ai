@@ -71,6 +71,13 @@ def test_fetch_and_write_joined_huggingface_preview_matches_reviews_by_asin(tmp_
         ],
         2: [
             {
+                "asin": "B001",
+                "rating": 4,
+                "text": "Second review for the same product.",
+                "user_id": "A4",
+                "timestamp": "2020-05-06 14:08:48.923",
+            },
+            {
                 "asin": "B002",
                 "rating": 4,
                 "text": "Soft texture, no irritation.",
@@ -127,7 +134,7 @@ def test_fetch_and_write_joined_huggingface_preview_matches_reviews_by_asin(tmp_
         reviews_dataset="reviews",
         target_matches=2,
         review_page_size=2,
-        max_review_rows=4,
+        max_review_rows=6,
         fetch_rows=fake_fetch_rows,
         search_rows=fake_search_rows,
     )
@@ -137,9 +144,9 @@ def test_fetch_and_write_joined_huggingface_preview_matches_reviews_by_asin(tmp_
     summary_payload = json.loads((tmp_path / "summary.json").read_text(encoding="utf-8"))
 
     assert [product["product_id"] for product in products] == ["B001", "B002"]
-    assert [review["product_id"] for review in reviews] == ["B001", "B002"]
+    assert [review["product_id"] for review in reviews] == ["B001", "B001", "B002"]
     assert summary["products_written"] == 2
-    assert summary["reviews_written"] == 2
-    assert summary["review_rows_scanned"] == 3
+    assert summary["reviews_written"] == 3
+    assert summary["review_rows_scanned"] == 4
     assert summary["metadata_searches"] == 3
     assert summary_payload["target_matches"] == 2

@@ -9,7 +9,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.glowfit.huggingface_preview import fetch_and_write_huggingface_preview  # noqa: E402
+from src.glowfit.huggingface_preview import (  # noqa: E402
+    HuggingFaceDatasetUnavailable,
+    fetch_and_write_huggingface_preview,
+)
 
 
 def main() -> None:
@@ -25,15 +28,18 @@ def main() -> None:
     parser.add_argument("--length", type=int, default=25)
     args = parser.parse_args()
 
-    summary = fetch_and_write_huggingface_preview(
-        output_dir=args.output_dir,
-        metadata_dataset=args.metadata_dataset,
-        reviews_dataset=args.reviews_dataset,
-        config=args.config,
-        split=args.split,
-        offset=args.offset,
-        length=args.length,
-    )
+    try:
+        summary = fetch_and_write_huggingface_preview(
+            output_dir=args.output_dir,
+            metadata_dataset=args.metadata_dataset,
+            reviews_dataset=args.reviews_dataset,
+            config=args.config,
+            split=args.split,
+            offset=args.offset,
+            length=args.length,
+        )
+    except HuggingFaceDatasetUnavailable as error:
+        parser.exit(2, f"Data fetch failed: {error}\n")
     print(json.dumps(summary, indent=2))
 
 

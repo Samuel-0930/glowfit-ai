@@ -1,7 +1,14 @@
 import json
 from pathlib import Path
+from urllib.error import HTTPError
 
-from src.glowfit.huggingface_preview import fetch_huggingface_rows, write_huggingface_preview
+import pytest
+
+from src.glowfit.huggingface_preview import (
+    HuggingFaceDatasetUnavailable,
+    fetch_huggingface_rows,
+    write_huggingface_preview,
+)
 
 
 class FakeResponse:
@@ -40,6 +47,21 @@ def test_fetch_huggingface_rows_builds_dataset_viewer_request():
         "https://datasets-server.huggingface.co/rows?"
         "dataset=owner%2Fdataset&config=default&split=train&offset=5&length=10"
     ]
+
+
+def test_fetch_huggingface_rows_wraps_viewer_outage():
+    def failing_urlopen(url: str, timeout: int):
+        raise HTTPError(url, 503, "Service Unavailable", {}, None)
+
+    with pytest.raises(HuggingFaceDatasetUnavailable, match="Try again later"):
+        fetch_huggingface_rows(
+            dataset="owner/dataset",
+            config="default",
+            split="train",
+            offset=0,
+            length=1,
+            urlopen=failing_urlopen,
+        )
 
 
 def test_write_huggingface_preview_maps_real_dataset_shapes(tmp_path: Path):

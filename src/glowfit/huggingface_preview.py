@@ -4,6 +4,7 @@ import json
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import urlopen as default_urlopen
 
@@ -11,6 +12,10 @@ from src.glowfit.datasets import parse_amazon_metadata_record
 from src.glowfit.schemas import Product, Review
 
 DATASET_VIEWER_BASE_URL = "https://datasets-server.huggingface.co"
+
+
+class HuggingFaceDatasetUnavailable(RuntimeError):
+    """Raised when the public Dataset Viewer cannot serve a requested dataset."""
 
 
 def fetch_huggingface_rows(
@@ -31,8 +36,13 @@ def fetch_huggingface_rows(
         }
     )
     url = f"{DATASET_VIEWER_BASE_URL}/rows?{query}"
-    with urlopen(url, timeout=20) as response:
-        payload = json.loads(response.read().decode("utf-8"))
+    try:
+        with urlopen(url, timeout=20) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except (HTTPError, TimeoutError, URLError) as error:
+        raise HuggingFaceDatasetUnavailable(
+            f"Hugging Face Dataset Viewer is unavailable for {dataset}. Try again later."
+        ) from error
     return [item["row"] for item in payload.get("rows", [])]
 
 

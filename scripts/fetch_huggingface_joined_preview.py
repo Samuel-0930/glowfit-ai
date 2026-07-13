@@ -13,7 +13,10 @@ from src.glowfit.huggingface_joined_preview import (  # noqa: E402
     fetch_and_write_joined_huggingface_preview,
     fetch_huggingface_search_rows,
 )
-from src.glowfit.huggingface_preview import fetch_huggingface_rows  # noqa: E402
+from src.glowfit.huggingface_preview import (  # noqa: E402
+    HuggingFaceDatasetUnavailable,
+    fetch_huggingface_rows,
+)
 
 
 def _log(message: str, quiet: bool) -> None:
@@ -34,6 +37,7 @@ def main() -> None:
     parser.add_argument("--target-matches", type=int, default=25)
     parser.add_argument("--review-page-size", type=int, default=25)
     parser.add_argument("--max-review-rows", type=int, default=250)
+    parser.add_argument("--min-reviews-per-product", type=int, default=3)
     parser.add_argument("--metadata-search-length", type=int, default=5)
     parser.add_argument("--metadata-search-timeout", type=int, default=5)
     parser.add_argument("--quiet", action="store_true")
@@ -70,20 +74,24 @@ def main() -> None:
         _log(f"Metadata search ASIN={query}: {len(rows)} {status}", args.quiet)
         return rows
 
-    summary = fetch_and_write_joined_huggingface_preview(
-        output_dir=args.output_dir,
-        metadata_dataset=args.metadata_dataset,
-        reviews_dataset=args.reviews_dataset,
-        config=args.config,
-        split=args.split,
-        review_offset=args.review_offset,
-        target_matches=args.target_matches,
-        review_page_size=args.review_page_size,
-        max_review_rows=args.max_review_rows,
-        metadata_search_length=args.metadata_search_length,
-        fetch_rows=fetch_rows_with_progress,
-        search_rows=search_rows_with_progress,
-    )
+    try:
+        summary = fetch_and_write_joined_huggingface_preview(
+            output_dir=args.output_dir,
+            metadata_dataset=args.metadata_dataset,
+            reviews_dataset=args.reviews_dataset,
+            config=args.config,
+            split=args.split,
+            review_offset=args.review_offset,
+            target_matches=args.target_matches,
+            review_page_size=args.review_page_size,
+            max_review_rows=args.max_review_rows,
+            min_reviews_per_product=args.min_reviews_per_product,
+            metadata_search_length=args.metadata_search_length,
+            fetch_rows=fetch_rows_with_progress,
+            search_rows=search_rows_with_progress,
+        )
+    except HuggingFaceDatasetUnavailable as error:
+        parser.exit(2, f"Data fetch failed: {error}\n")
     print(json.dumps(summary, indent=2))
 
 

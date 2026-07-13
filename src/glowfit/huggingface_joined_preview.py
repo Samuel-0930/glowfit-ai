@@ -106,17 +106,19 @@ def fetch_and_write_joined_huggingface_preview(
     target_matches: int = 25,
     review_page_size: int = 25,
     max_review_rows: int = 250,
+    min_reviews_per_product: int = 3,
     metadata_search_length: int = 5,
     fetch_rows: FetchRows = fetch_huggingface_rows,
     search_rows: SearchRows = fetch_huggingface_search_rows,
 ) -> dict[str, str | int]:
     matched_product_rows: list[dict[str, Any]] = []
     matched_review_rows: list[dict[str, Any]] = []
-    seen_asins: set[str] = set()
+    matched_product_asins: set[str] = set()
+    matched_review_counts: dict[str, int] = {}
     review_rows_scanned = 0
     metadata_searches = 0
 
-    while review_rows_scanned < max_review_rows and len(matched_review_rows) < target_matches:
+    while review_rows_scanned < max_review_rows:
         page_offset = review_offset + review_rows_scanned
         page_length = min(review_page_size, max_review_rows - review_rows_scanned)
         review_page = fetch_rows(reviews_dataset, config, split, page_offset, page_length)
@@ -126,7 +128,15 @@ def fetch_and_write_joined_huggingface_preview(
         for review_row in review_page:
             review_rows_scanned += 1
             asin = _row_asin(review_row)
-            if not asin or asin in seen_asins:
+            if not asin:
+                continue
+
+            if asin in matched_product_asins:
+                matched_review_rows.append(review_row)
+                matched_review_counts[asin] += 1
+                continue
+
+            if len(matched_product_rows) >= target_matches:
                 continue
 
             metadata_searches += 1
@@ -142,11 +152,16 @@ def fetch_and_write_joined_huggingface_preview(
             if metadata_row is None:
                 continue
 
-            seen_asins.add(asin)
+            matched_product_asins.add(asin)
             matched_product_rows.append(metadata_row)
             matched_review_rows.append(review_row)
-            if len(matched_review_rows) >= target_matches:
-                break
+            matched_review_counts[asin] = 1
+
+        if (
+            len(matched_product_rows) >= target_matches
+            and all(count >= min_reviews_per_product for count in matched_review_counts.values())
+        ):
+            break
 
     return _write_joined_preview(
         product_rows=matched_product_rows,
@@ -154,6 +169,7 @@ def fetch_and_write_joined_huggingface_preview(
         output_dir=output_dir,
         summary={
             "target_matches": target_matches,
+            "min_reviews_per_product": min_reviews_per_product,
             "review_rows_scanned": review_rows_scanned,
             "metadata_searches": metadata_searches,
         },
