@@ -15,6 +15,15 @@ type TabId = "recommend" | "compare" | "insights" | "experiments" | "portfolio";
 
 const tabs: TabId[] = ["recommend", "compare", "insights", "experiments", "portfolio"];
 
+const evaluationWarningCopy: Record<string, string> = {
+  "Catalog has fewer than 10 products; do not compare model quality from this run.":
+    "카탈로그가 10개 미만이라 모델 간 우열을 판단하기에는 표본이 작습니다.",
+  "Every catalog product satisfies the relevance rule; ranking metrics cannot distinguish models.":
+    "모든 제품이 relevance 기준을 충족해 현재 지표만으로 모델 간 차이를 구분할 수 없습니다.",
+  "At least one k value exceeds the catalog size; interpret those metrics cautiously.":
+    "일부 k 값이 카탈로그 크기보다 커서 해당 지표는 참고용으로만 해석해야 합니다."
+};
+
 export default function Page() {
   const [preferences, setPreferences] = useState<UserPreferences>(defaultPreferences);
   const [report, setReport] = useState<ReportResponse | null>(null);
@@ -174,7 +183,10 @@ export default function Page() {
             <div className="metrics-grid">
               {[
                 ["평가 카탈로그", `${samplePublicEvaluation.product_count}개 제품`],
-                ["precision@1", "1.0000"],
+                [
+                  "relevance coverage",
+                  `${Math.round(samplePublicEvaluation.coverage.relevant_product_rate * 100)}%`
+                ],
                 ["recall@3", samplePublicEvaluation.models.hybrid.metrics["recall@3"].toFixed(4)],
                 ["ndcg@3", samplePublicEvaluation.models.hybrid.metrics["ndcg@3"].toFixed(4)]
               ].map(([label, value]) => (
@@ -184,11 +196,23 @@ export default function Page() {
                 </div>
               ))}
             </div>
-            <p className="muted">
-              `artifacts/sample`의 products.json과 reviews.json을 기준으로 재생성한 오프라인
-              평가입니다. 작은 샘플에서는 지표가 과도하게 높게 나올 수 있어, 모델 성능의 일반화
-              근거로 해석하지 않습니다.
-            </p>
+            <section className="evaluation-status" aria-label="Evaluation integrity">
+              <strong>
+                {samplePublicEvaluation.comparative_ready ? "비교 가능" : "탐색용 평가"}
+              </strong>
+              <p>
+                {samplePublicEvaluation.comparative_ready
+                  ? "동일한 데이터와 기준으로 모델 변경을 비교할 수 있습니다."
+                  : "현재 결과는 평가 파이프라인의 재현성을 확인하기 위한 샘플이며, 모델 성능의 일반화 근거로 사용하지 않습니다."}
+              </p>
+              {!samplePublicEvaluation.comparative_ready && (
+                <ul>
+                  {samplePublicEvaluation.warnings.map((warning) => (
+                    <li key={warning}>{evaluationWarningCopy[warning] ?? warning}</li>
+                  ))}
+                </ul>
+              )}
+            </section>
             <div className="evaluation-table" role="table" aria-label="Public evaluation metrics">
               <div className="evaluation-row evaluation-head" role="row">
                 <span>model</span>

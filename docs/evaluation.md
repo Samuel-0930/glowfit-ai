@@ -72,3 +72,16 @@ The public artifact evaluator treats products with at least one review at or abo
 - hybrid
 
 The output JSON includes product/review counts, the relevance rule, ranked product IDs per model, and precision@k, recall@k, and NDCG@k metrics.
+
+## Evaluation Integrity Gate
+
+The report also records `coverage`, `comparative_ready`, and `warnings`. This prevents a tidy-looking
+metric from being presented as model evidence when the catalog cannot support that conclusion.
+
+- Fewer than 10 products: keep the run as a pipeline smoke test, not a model comparison.
+- No relevant products or all products relevant: the relevance labels cannot distinguish rankings.
+- `k` larger than the catalog: treat that metric as contextual only.
+
+Only compare model changes when `comparative_ready` is `true`. The committed three-product fixture is
+intentionally shown as an exploratory, reproducible example; its all-relevant labels make every model
+score 1.0, so it is not a benchmark claim.

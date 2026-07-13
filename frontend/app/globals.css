@@ -421,6 +421,27 @@ meter {
   overflow: hidden;
 }
 
+.evaluation-status {
+  background: var(--surface-soft);
+  border-left: 3px solid var(--brand);
+  display: grid;
+  gap: 8px;
+  margin: 20px 0;
+  padding: 16px;
+}
+
+.evaluation-status p,
+.evaluation-status ul {
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+.evaluation-status ul {
+  display: grid;
+  gap: 4px;
+  padding-left: 18px;
+}
+
 .evaluation-row {
   border-top: 1px solid var(--hairline);
   display: grid;

@@ -289,6 +289,12 @@ export const mockPublicEvaluation: PublicEvaluationReport = {
   review_count: 25,
   relevance_rule: "review_rating >= 4",
   relevant_product_ids: ["B001", "B002", "B003"],
+  coverage: {
+    relevant_product_count: 3,
+    relevant_product_rate: 0.12
+  },
+  comparative_ready: true,
+  warnings: [],
   k_values: [1, 3, 5],
   models: {
     popularity: {

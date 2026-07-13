@@ -62,6 +62,12 @@ export type PublicEvaluationReport = {
   review_count: number;
   relevance_rule: string;
   relevant_product_ids: string[];
+  coverage: {
+    relevant_product_count: number;
+    relevant_product_rate: number;
+  };
+  comparative_ready: boolean;
+  warnings: string[];
   k_values: number[];
   models: Record<string, PublicEvaluationModel>;
 };

@@ -70,6 +70,13 @@ def test_build_public_artifact_evaluation_report_uses_review_threshold(tmp_path:
     assert report["review_count"] == 2
     assert report["relevance_rule"] == "review_rating >= 4"
     assert report["relevant_product_ids"] == ["p1"]
+    assert report["coverage"] == {
+        "relevant_product_count": 1,
+        "relevant_product_rate": 0.5,
+    }
+    assert report["comparative_ready"] is False
+    assert "Catalog has fewer than 10 products" in report["warnings"][0]
+    assert len(report["warnings"]) == 1
     assert report["models"]["hybrid"]["ranked_product_ids"][0] == "p1"
     assert report["models"]["hybrid"]["metrics"]["precision@1"] == 1.0
     assert set(report["models"]) == {

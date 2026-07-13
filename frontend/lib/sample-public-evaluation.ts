@@ -7,6 +7,16 @@ export const samplePublicEvaluation: PublicEvaluationReport = {
   review_count: 5,
   relevance_rule: "review_rating >= 4",
   relevant_product_ids: ["p_calm_ampoule", "p_glow_gel", "p_velvet_sunscreen"],
+  coverage: {
+    relevant_product_count: 3,
+    relevant_product_rate: 1
+  },
+  comparative_ready: false,
+  warnings: [
+    "Catalog has fewer than 10 products; do not compare model quality from this run.",
+    "Every catalog product satisfies the relevance rule; ranking metrics cannot distinguish models.",
+    "At least one k value exceeds the catalog size; interpret those metrics cautiously."
+  ],
   k_values: [1, 3, 5],
   models: {
     popularity: {

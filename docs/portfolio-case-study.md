@@ -33,16 +33,39 @@ The sample ranking evaluation uses a dry, fragrance-sensitive profile and marks 
 
 Public artifact evaluation now uses the same metrics after processed data is generated. Products with at least one review above the relevance threshold are treated as relevant, and the report compares popularity, rating, collaborative, content, Two-Tower, and hybrid rankers.
 
+The committed three-product artifact is deliberately an exploratory fixture, not a benchmark. Its current
+relevance rule labels all three products relevant, so the UI and JSON report mark the run as
+`comparative_ready: false` rather than treating 1.0 scores as proof of model quality. This is a product
+decision: the evaluation page shows the limitation next to the result, while the pipeline remains
+reproducible for a larger ASIN-joined catalog.
+
 ## Product Experience
 
 The demo opens to a profile-first workspace. After entering skin conditions, a reviewer can inspect
 the API-backed top recommendation, evidence snippets, model scores, and product comparison without
 reading code first.
 
+## Production Evidence
+
+- Live application: https://glowfit-web.vercel.app
+- API health endpoint: https://glowfit-api.vercel.app/health
+- The Next.js client calls a separately deployed FastAPI API through an environment-configured base URL.
+- The API uses a TTL catalog cache with stale-data fallback, explicit CORS origins, trusted-host validation,
+  and a Vercel Firewall rate-limit rule for `/recommendations`.
+
+## Interview Narrative
+
+The most important engineering choice was to avoid a static recommendation mock. I designed a profile-to-
+ranking-to-evidence flow, then made its failure modes visible: unavailable catalog data returns an API error,
+small evaluation data is labeled exploratory, and the deployed client is constrained to the production API
+origin. The project does not claim a trained Two-Tower model or production-quality ranking lift; it shows a
+clear baseline, an explainable API contract, a repeatable evaluation path, and the next experiment needed to
+validate the ranking on a larger, non-degenerate joined catalog.
+
 ## Phase 2
 
 - Public dataset pipeline with joined evaluation-ready artifacts.
 - Experiment tracking.
 - Real LLM/RAG report generation.
-- Deployment and monitoring.
+- Production deployment, CORS validation, and request protection.
 - Korean-market localized demo copy.

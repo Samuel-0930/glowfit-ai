@@ -6,7 +6,7 @@
 
 GlowFit AI는 화장품 리뷰와 상품 속성 데이터를 기반으로 사용자의 피부 타입, 고민, 선호 제형, 향 민감도, 예산, 회피 조건을 반영해 제품을 랭킹합니다. 단순히 정해진 결과를 보여주는 데모가 아니라, 입력 조건이 바뀌면 추천 후보와 점수, 리뷰 근거, 비교 화면이 함께 바뀌도록 구성했습니다.
 
-[Notion 포트폴리오 보기](https://app.notion.com/p/3996f7e3d828811fa0d7e358a783d6f6)
+[라이브 데모](https://glowfit-web.vercel.app) · [API Health](https://glowfit-api.vercel.app/health) · [Notion 포트폴리오 보기](https://app.notion.com/p/3996f7e3d828811fa0d7e358a783d6f6)
 
 ## 현재 데모에서 볼 수 있는 것
 
@@ -51,7 +51,8 @@ flowchart LR
 - **추천 시스템 문제를 제품 흐름으로 연결했습니다.** 입력 profile, ranking score, 추천 결과, 리뷰 근거, 비교 화면이 하나의 사용자 여정으로 이어집니다.
 - **정답 고정 데모를 피했습니다.** 조건을 바꾸면 추천 후보와 점수도 바뀌는 구조라 모델/랭킹 로직이 화면에서 드러납니다.
 - **설명 가능한 추천을 구현했습니다.** 단순 점수 대신 review evidence와 aspect tag를 함께 보여줍니다.
-- **데이터 파이프라인과 평가를 갖췄습니다.** 공개 데이터 preview, ASIN join, offline ranking evaluation을 별도 script와 문서로 관리합니다.
+- **데이터 파이프라인과 평가를 갖췄습니다.** 공개 데이터 preview, ASIN join, offline ranking evaluation을 별도 script와 문서로 관리하고, 표본·relevance 분포가 비교에 부적합하면 결과를 탐색용으로 표시합니다.
+- **데모 운영 조건까지 구현했습니다.** 별도 Vercel 프로젝트의 Next.js/FastAPI 배포, 명시적 CORS·trusted host, TTL cache의 stale fallback, Firewall 기반 요청 제한을 적용했습니다.
 
 ## 모델/랭킹 구조
 
@@ -157,6 +158,10 @@ python3 scripts/evaluate_public_artifacts.py \
   --output artifacts/public_evaluation.json
 ```
 
+평가 결과의 `comparative_ready`가 `false`이면 해당 수치는 파이프라인 검증용입니다. 특히 커밋된
+3개 제품 fixture는 모든 제품이 relevance 기준을 충족하므로 모델 성능 비교 근거로 사용하지 않습니다.
+해석 기준은 [평가 문서](docs/evaluation.md#evaluation-integrity-gate)에 정리했습니다.
+
 ## 검증
 
 ```bash
@@ -171,8 +176,8 @@ npm --prefix frontend run build
 | Check | Result |
 | --- | --- |
 | Frontend build | passed |
-| Frontend tests | 4 passed |
-| Python tests | 40 passed |
+| Frontend tests | 5 passed |
+| Python tests | 50 passed |
 
 ## 배포
 

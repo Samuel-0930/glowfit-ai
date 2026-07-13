@@ -43,6 +43,32 @@ def _ranked_ids_from_scores(scores: list[tuple[str, float]]) -> list[str]:
     return [product_id for product_id, _score in scores]
 
 
+def _evaluation_warnings(
+    product_count: int,
+    relevant_product_count: int,
+    k_values: list[int],
+) -> list[str]:
+    warnings: list[str] = []
+    if product_count < 10:
+        warnings.append(
+            "Catalog has fewer than 10 products; do not compare model quality from this run."
+        )
+    if relevant_product_count == 0:
+        warnings.append(
+            "No products satisfy the relevance rule; ranking metrics are not meaningful."
+        )
+    elif relevant_product_count == product_count:
+        warnings.append(
+            "Every catalog product satisfies the relevance rule; "
+            "ranking metrics cannot distinguish models."
+        )
+    if any(k > product_count for k in k_values):
+        warnings.append(
+            "At least one k value exceeds the catalog size; interpret those metrics cautiously."
+        )
+    return warnings
+
+
 def _model_rankings(
     products: list[Product],
     reviews: list[Review],
@@ -76,6 +102,11 @@ def build_public_artifact_evaluation_report(
     reviews = load_reviews(artifact_dir / "reviews.json")
     evidence_index = EvidenceIndex.from_reviews(reviews)
     relevant_product_ids = _relevant_product_ids(reviews, relevant_rating_threshold)
+    warnings = _evaluation_warnings(
+        product_count=len(products),
+        relevant_product_count=len(relevant_product_ids),
+        k_values=resolved_k_values,
+    )
 
     models: dict[str, dict[str, Any]] = {}
     for model_name, ranked_product_ids in _model_rankings(
@@ -99,6 +130,16 @@ def build_public_artifact_evaluation_report(
         "review_count": len(reviews),
         "relevance_rule": f"review_rating >= {relevant_rating_threshold}",
         "relevant_product_ids": relevant_product_ids,
+        "coverage": {
+            "relevant_product_count": len(relevant_product_ids),
+            "relevant_product_rate": round(
+                len(relevant_product_ids) / len(products), 4
+            )
+            if products
+            else 0.0,
+        },
+        "comparative_ready": not warnings,
+        "warnings": warnings,
         "k_values": resolved_k_values,
         "profile": resolved_preferences.model_dump(),
         "models": models,
