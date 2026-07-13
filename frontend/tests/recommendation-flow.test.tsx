@@ -38,6 +38,8 @@ describe("recommendation flow", () => {
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Pore Reset Water Serum" })).toBeInTheDocument();
     });
+    expect(screen.getByRole("heading", { name: "왜 Pore Reset Water Serum인가요?" })).toBeInTheDocument();
+    expect(screen.getByText("랭킹 상세 보기")).toBeInTheDocument();
   });
 
   it("shows an API error instead of presenting a mock result", async () => {

@@ -83,7 +83,6 @@ button {
 .preference-panel,
 .content-panel,
 .evidence-panel,
-.model-panel,
 .comparison-panel,
 .product-card,
 .comparison-card,
@@ -252,6 +251,11 @@ select {
   grid-template-columns: minmax(0, 1fr) 360px;
 }
 
+.report-main {
+  display: grid;
+  gap: 20px;
+}
+
 .report-main h1,
 .content-panel h1,
 .comparison-panel h1 {
@@ -268,11 +272,73 @@ select {
   gap: 14px;
 }
 
+.why-panel {
+  background: var(--surface-soft);
+  border: 1px solid #b7d9bf;
+  border-radius: 8px;
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.why-panel h2 {
+  font-size: 22px;
+  margin: 4px 0 0;
+}
+
+.why-summary,
+.model-note {
+  color: var(--ink-muted);
+  line-height: 1.55;
+  margin: 6px 0 0;
+}
+
+.reason-list,
+.product-reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.reason-tag {
+  background: var(--brand);
+  border-radius: 999px;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 10px;
+}
+
+.decision-caution,
+.product-caution {
+  color: #9f1239;
+  font-size: 13px;
+  margin: 0;
+}
+
 .product-card {
   display: grid;
   gap: 12px;
   grid-template-columns: 72px minmax(0, 1fr) 64px;
   transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.product-card-top {
+  border-color: #98e5ad;
+}
+
+.product-card-main h3 {
+  font-size: 20px;
+  margin: 4px 0;
+}
+
+.product-card-main .muted {
+  margin: 0;
+}
+
+.product-reasons,
+.product-caution {
+  grid-column: 2 / -1;
 }
 
 .product-card:hover,
@@ -338,6 +404,25 @@ select {
   gap: 10px;
   grid-template-columns: 92px minmax(0, 1fr) 48px;
   padding-top: 10px;
+}
+
+.model-panel {
+  border-top: 1px solid var(--hairline);
+  padding-top: 14px;
+}
+
+.model-panel summary {
+  color: var(--ink-muted);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.model-panel[open] summary {
+  color: var(--ink);
+}
+
+.model-panel .metric-row:first-of-type {
+  margin-top: 14px;
 }
 
 meter {
@@ -423,7 +508,7 @@ meter {
 
 .evaluation-status {
   background: var(--surface-soft);
-  border-left: 3px solid var(--brand);
+  border: 1px solid #b7d9bf;
   display: grid;
   gap: 8px;
   margin: 20px 0;
@@ -508,5 +593,10 @@ meter {
   .portfolio-grid,
   .insight-summary-grid {
     grid-template-columns: 1fr;
+  }
+
+  .product-reasons,
+  .product-caution {
+    grid-column: auto;
   }
 }

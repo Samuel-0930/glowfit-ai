@@ -2,6 +2,18 @@ import { EvidencePanel } from "./evidence-panel";
 import { ProductCard } from "./product-card";
 import type { ReportResponse } from "../lib/types";
 
+const modelLabels: Record<string, string> = {
+  profile: "프로필 적합도",
+  review: "리뷰 근거",
+  budget: "예산 적합도",
+  hybrid: "종합 점수",
+  popularity: "인기도",
+  rating: "평점",
+  collaborative: "리뷰 패턴",
+  content: "조건 적합도",
+  two_tower: "텍스트 유사도"
+};
+
 export function RecommendationReport({ report }: { report: ReportResponse | null }) {
   if (!report) {
     return (
@@ -30,11 +42,28 @@ export function RecommendationReport({ report }: { report: ReportResponse | null
         <p className="data-source" aria-label={`데이터 출처: ${sourceLabel}`}>
           데이터 출처: {sourceLabel}
         </p>
-        <p className="summary">{report.summary}</p>
+        <section className="why-panel" aria-labelledby="why-title">
+          <div>
+            <p className="eyebrow">1위 추천 이유</p>
+            <h2 id="why-title">왜 {top.product.name}인가요?</h2>
+            <p className="why-summary">선택한 피부 조건과 가장 많이 맞는 제품입니다.</p>
+          </div>
+          <div className="reason-list" aria-label="추천 핵심 근거">
+            {top.reasons.map((reason) => (
+              <span className="reason-tag" key={reason}>
+                {reason}
+              </span>
+            ))}
+          </div>
+          {top.cautions.length > 0 && (
+            <p className="decision-caution">확인할 점: {top.cautions.join(" · ")}</p>
+          )}
+        </section>
 
         <div className="recommendation-list">
           {report.recommendations.map((recommendation, index) => (
             <ProductCard
+              isTop={index === 0}
               key={recommendation.product.product_id}
               recommendation={recommendation}
               rank={index + 1}
@@ -42,16 +71,19 @@ export function RecommendationReport({ report }: { report: ReportResponse | null
           ))}
         </div>
 
-        <section className="model-panel">
-          <h2>랭킹 신호</h2>
+        <details className="model-panel">
+          <summary>랭킹 상세 보기</summary>
+          <p className="model-note">
+            이 값은 현재 추천에서 각 신호가 반영된 정도이며, 모델 성능이나 정확도를 뜻하지 않습니다.
+          </p>
           {Object.entries(top.model_scores).map(([model, score]) => (
             <div key={model} className="metric-row">
-              <span>{model}</span>
+              <span>{modelLabels[model] ?? model}</span>
               <meter max={1} min={0} value={score} />
               <strong>{score.toFixed(2)}</strong>
             </div>
           ))}
-        </section>
+        </details>
       </main>
 
       <EvidencePanel recommendation={top} />
