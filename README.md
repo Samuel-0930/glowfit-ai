@@ -162,6 +162,10 @@ python3 scripts/evaluate_public_artifacts.py \
 3개 제품 fixture는 모든 제품이 relevance 기준을 충족하므로 모델 성능 비교 근거로 사용하지 않습니다.
 해석 기준은 [평가 문서](docs/evaluation.md#evaluation-integrity-gate)에 정리했습니다.
 
+더 큰 artifact에서는 `temporal_user_holdout`도 함께 생성됩니다. 사용자별 마지막 긍정 상호작용을
+보류하고 그 시점 이전 리뷰만으로 순위 신호를 계산하며, 적격 사용자가 20명 이상일 때만 비교용으로
+표시합니다.
+
 ## 검증
 
 ```bash

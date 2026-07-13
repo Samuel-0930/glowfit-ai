@@ -329,5 +329,14 @@ export const mockPublicEvaluation: PublicEvaluationReport = {
         "ndcg@3": 1
       }
     }
+  },
+  temporal_user_holdout: {
+    protocol: "per-user last positive interaction holdout with time-bounded ranking signals",
+    eligible_user_count: 25,
+    skipped_user_count: 0,
+    minimum_holdouts: 20,
+    comparative_ready: true,
+    warnings: [],
+    models: {}
   }
 };

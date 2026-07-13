@@ -5,6 +5,8 @@ from src.glowfit.public_evaluation import (
     build_public_artifact_evaluation_report,
     write_public_artifact_evaluation_report,
 )
+from src.glowfit.schemas import Product, Review
+from src.glowfit.temporal_evaluation import build_temporal_user_holdout_report
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -128,3 +130,59 @@ def test_write_public_artifact_evaluation_report_creates_parent_directory(tmp_pa
     written = json.loads(output_path.read_text(encoding="utf-8"))
     assert written["models"]["hybrid"]["ranked_product_ids"] == ["p1"]
     assert report == written
+
+
+def test_temporal_user_holdout_excludes_each_users_future_interaction():
+    products = [
+        Product(
+            product_id="p1",
+            name="Barrier Gel",
+            category="moisturizer",
+            brand="Aster",
+            price_usd=20,
+            average_rating=4.5,
+            review_count=10,
+            attributes=["barrier care", "light texture"],
+        ),
+        Product(
+            product_id="p2",
+            name="Barrier Lotion",
+            category="moisturizer",
+            brand="Aster",
+            price_usd=22,
+            average_rating=4.2,
+            review_count=8,
+            attributes=["barrier care", "light texture"],
+        ),
+    ]
+    reviews = [
+        Review(
+            review_id="r1",
+            user_id="u1",
+            product_id="p1",
+            rating=5,
+            text="first",
+            timestamp="2024-01-01",
+        ),
+        Review(
+            review_id="r2",
+            user_id="u1",
+            product_id="p2",
+            rating=5,
+            text="held out",
+            timestamp="2024-02-01",
+        ),
+    ]
+
+    report = build_temporal_user_holdout_report(
+        products=products,
+        reviews=reviews,
+        relevant_rating_threshold=4,
+        k_values=[1],
+        minimum_holdouts=1,
+    )
+
+    assert report["eligible_user_count"] == 1
+    assert report["comparative_ready"] is True
+    assert report["models"]["popularity"]["metrics"]["precision@1"] == 0.0
+    assert "history_attribute_overlap" in report["models"]

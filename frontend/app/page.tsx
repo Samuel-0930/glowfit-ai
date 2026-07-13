@@ -213,6 +213,20 @@ export default function Page() {
                 </ul>
               )}
             </section>
+            <section className="evaluation-status" aria-label="Temporal evaluation integrity">
+              <strong>
+                시간 분리 평가: {samplePublicEvaluation.temporal_user_holdout.comparative_ready ? "비교 가능" : "준비 중"}
+              </strong>
+              <p>
+                사용자별 마지막 긍정 상호작용을 보류하고, 그 시점 이전의 리뷰만으로 순위를 계산합니다.
+              </p>
+              {!samplePublicEvaluation.temporal_user_holdout.comparative_ready && (
+                <p>
+                  현재 샘플은 적격 사용자가 {samplePublicEvaluation.temporal_user_holdout.eligible_user_count}명으로,
+                  비교 기준인 {samplePublicEvaluation.temporal_user_holdout.minimum_holdouts}명에 미달합니다.
+                </p>
+              )}
+            </section>
             <div className="evaluation-table" role="table" aria-label="Public evaluation metrics">
               <div className="evaluation-row evaluation-head" role="row">
                 <span>model</span>

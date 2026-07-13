@@ -85,3 +85,10 @@ metric from being presented as model evidence when the catalog cannot support th
 Only compare model changes when `comparative_ready` is `true`. The committed three-product fixture is
 intentionally shown as an exploratory, reproducible example; its all-relevant labels make every model
 score 1.0, so it is not a benchmark claim.
+
+## Temporal User Holdout
+
+`temporal_user_holdout` holds out each eligible user's final positive interaction and rebuilds
+popularity and rating signals using only reviews that predate that interaction. It is a separate,
+history-aware evaluation protocol, not a claim that the current cold-start product UI has user-history
+features. The report requires at least 20 eligible user holdouts before comparing ranking changes.

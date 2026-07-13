@@ -16,6 +16,7 @@ from src.glowfit.models import (
 )
 from src.glowfit.ranking import recommend
 from src.glowfit.schemas import Product, Review, UserPreferences
+from src.glowfit.temporal_evaluation import build_temporal_user_holdout_report
 
 
 def default_public_preferences() -> UserPreferences:
@@ -145,6 +146,12 @@ def build_public_artifact_evaluation_report(
         "k_values": resolved_k_values,
         "profile": resolved_preferences.model_dump(),
         "models": models,
+        "temporal_user_holdout": build_temporal_user_holdout_report(
+            products=products,
+            reviews=reviews,
+            relevant_rating_threshold=relevant_rating_threshold,
+            k_values=resolved_k_values,
+        ),
     }
 
 

@@ -43,5 +43,17 @@ export const samplePublicEvaluation: PublicEvaluationReport = {
       ranked_product_ids: ["p_glow_gel", "p_velvet_sunscreen", "p_calm_ampoule"],
       metrics: { "precision@1": 1, "recall@3": 1, "ndcg@3": 1 }
     }
+  },
+  temporal_user_holdout: {
+    protocol: "per-user last positive interaction holdout with time-bounded ranking signals",
+    eligible_user_count: 0,
+    skipped_user_count: 3,
+    minimum_holdouts: 20,
+    comparative_ready: false,
+    warnings: [
+      "Only 0 eligible user holdouts; at least 20 are required for comparison.",
+      "No user has a positive last interaction and an earlier positive history in the catalog."
+    ],
+    models: {}
   }
 };

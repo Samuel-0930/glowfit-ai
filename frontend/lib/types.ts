@@ -70,4 +70,13 @@ export type PublicEvaluationReport = {
   warnings: string[];
   k_values: number[];
   models: Record<string, PublicEvaluationModel>;
+  temporal_user_holdout: {
+    protocol: string;
+    eligible_user_count: number;
+    skipped_user_count: number;
+    minimum_holdouts: number;
+    comparative_ready: boolean;
+    warnings: string[];
+    models: Record<string, { metrics: Record<string, number> }>;
+  };
 };
