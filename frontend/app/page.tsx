@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AppShell } from "../components/app-shell";
 import { PreferenceForm } from "../components/preference-form";
 import { ProductComparison } from "../components/product-comparison";
 import { RecommendationReport } from "../components/recommendation-report";
 import { fetchReport } from "../lib/api";
-import { defaultPreferences, inferRecommendations, mockPublicEvaluation } from "../lib/mock-data";
+import { defaultPreferences } from "../lib/mock-data";
+import { samplePublicEvaluation } from "../lib/sample-public-evaluation";
 import type { ReportResponse, UserPreferences } from "../lib/types";
 
 type TabId = "recommend" | "compare" | "insights" | "experiments" | "portfolio";
@@ -17,11 +18,11 @@ const tabs: TabId[] = ["recommend", "compare", "insights", "experiments", "portf
 export default function Page() {
   const [preferences, setPreferences] = useState<UserPreferences>(defaultPreferences);
   const [report, setReport] = useState<ReportResponse | null>(null);
+  const [requestError, setRequestError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<TabId>("recommend");
 
-  const previewReport = useMemo(() => inferRecommendations(preferences), [preferences]);
-  const currentReport = report ?? previewReport;
+  const currentReport = report;
   const recommendations = currentReport?.recommendations ?? [];
   const allEvidence = recommendations.flatMap((recommendation) =>
     recommendation.evidence.map((snippet) => ({ ...snippet, productName: recommendation.product.name }))
@@ -52,14 +53,17 @@ export default function Page() {
 
   async function handleGenerate() {
     setIsLoading(true);
-    const nextReport = await fetchReport(preferences);
-    setReport(nextReport);
+    setRequestError(null);
+    const result = await fetchReport(preferences);
+    setReport(result.report);
+    setRequestError(result.error);
     setIsLoading(false);
   }
 
   function handlePreferenceChange(nextPreferences: UserPreferences) {
     setPreferences(nextPreferences);
     setReport(null);
+    setRequestError(null);
   }
 
   function handleTabChange(tab: string) {
@@ -78,6 +82,11 @@ export default function Page() {
             onGenerate={handleGenerate}
             isLoading={isLoading}
           />
+          {requestError && (
+            <p className="request-error" role="alert">
+              {requestError}
+            </p>
+          )}
           <RecommendationReport report={currentReport} />
         </main>
       )}
@@ -98,7 +107,7 @@ export default function Page() {
                 추천 후보와 연결된 리뷰 문장을 aspect 단위로 모아 어떤 조건이 랭킹에 영향을
                 주었는지 확인합니다.
               </p>
-              {currentReport ? (
+              {currentReport && recommendations.length ? (
                 <>
                   <div className="insight-summary-grid">
                     <div className="metric-card">
@@ -126,7 +135,11 @@ export default function Page() {
                   </section>
                 </>
               ) : (
-                <p className="empty-inline">추천 프로필을 먼저 입력해 주세요.</p>
+                <p className="empty-inline">
+                  {currentReport
+                    ? "현재 조건에 맞는 추천 상품이 없습니다."
+                    : "추천 프로필을 먼저 입력해 주세요."}
+                </p>
               )}
             </div>
             <div className="content-panel">
@@ -160,10 +173,10 @@ export default function Page() {
             <h1>랭킹 모델 비교</h1>
             <div className="metrics-grid">
               {[
+                ["평가 카탈로그", `${samplePublicEvaluation.product_count}개 제품`],
                 ["precision@1", "1.0000"],
-                ["recall@3", "1.0000"],
-                ["ndcg@3", "0.9197"],
-                ["python tests", "31 passed"]
+                ["recall@3", samplePublicEvaluation.models.hybrid.metrics["recall@3"].toFixed(4)],
+                ["ndcg@3", samplePublicEvaluation.models.hybrid.metrics["ndcg@3"].toFixed(4)]
               ].map(([label, value]) => (
                 <div className="metric-card" key={label}>
                   <span>{label}</span>
@@ -172,8 +185,9 @@ export default function Page() {
               ))}
             </div>
             <p className="muted">
-              Public artifact evaluator는 products.json과 reviews.json을 읽고 여러 ranker를 같은
-              metric으로 비교합니다.
+              `artifacts/sample`의 products.json과 reviews.json을 기준으로 재생성한 오프라인
+              평가입니다. 작은 샘플에서는 지표가 과도하게 높게 나올 수 있어, 모델 성능의 일반화
+              근거로 해석하지 않습니다.
             </p>
             <div className="evaluation-table" role="table" aria-label="Public evaluation metrics">
               <div className="evaluation-row evaluation-head" role="row">
@@ -183,7 +197,7 @@ export default function Page() {
                 <span>ndcg@3</span>
                 <span>top ids</span>
               </div>
-              {Object.entries(mockPublicEvaluation.models).map(([model, result]) => (
+              {Object.entries(samplePublicEvaluation.models).map(([model, result]) => (
                 <div className="evaluation-row" key={model} role="row">
                   <strong>{model}</strong>
                   <span>{result.metrics["precision@1"].toFixed(4)}</span>
@@ -208,7 +222,7 @@ export default function Page() {
                 <span>데모, 모델 스택, 평가 지표, 실행 방법을 확인합니다.</span>
               </a>
               <a
-                href="https://app.notion.com/p/3746f7e3d82881919c76e7340a8a508a"
+                href="https://app.notion.com/p/3996f7e3d828811fa0d7e358a783d6f6"
                 rel="noreferrer"
                 target="_blank"
               >

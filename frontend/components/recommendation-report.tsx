@@ -11,13 +11,25 @@ export function RecommendationReport({ report }: { report: ReportResponse | null
     );
   }
 
+  if (!report.recommendations.length) {
+    return (
+      <section className="empty-state">
+        <p>현재 조건에 맞는 추천 상품이 없습니다. 예산이나 피부 고민 조건을 조정해 다시 시도해 주세요.</p>
+      </section>
+    );
+  }
+
   const top = report.recommendations[0];
+  const sourceLabel = report.metadata?.data_source === "supabase" ? "Supabase 카탈로그" : "내장 샘플 데이터";
 
   return (
     <section className="report-grid">
       <main className="report-main">
         <p className="eyebrow">추천 결과</p>
         <h1>상위 추천 3개</h1>
+        <p className="data-source" aria-label={`데이터 출처: ${sourceLabel}`}>
+          데이터 출처: {sourceLabel}
+        </p>
         <p className="summary">{report.summary}</p>
 
         <div className="recommendation-list">

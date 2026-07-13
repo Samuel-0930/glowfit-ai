@@ -95,6 +95,21 @@ button {
   padding: 16px;
 }
 
+.request-error {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: 8px;
+  color: #9f1239;
+  margin: 0;
+  padding: 12px 14px;
+}
+
+.data-source {
+  color: var(--ink-subtle);
+  font-size: 13px;
+  margin: -4px 0 0;
+}
+
 .preference-panel {
   display: grid;
   gap: 14px;

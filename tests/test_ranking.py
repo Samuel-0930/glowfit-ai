@@ -16,6 +16,7 @@ def test_recommend_returns_ranked_recommendations_with_evidence():
     assert len(recommendations) == 2
     assert recommendations[0].product.product_id == "p_glow_gel"
     assert recommendations[0].fit_score > recommendations[1].fit_score
+    assert all(0 <= recommendation.fit_score <= 1 for recommendation in recommendations)
     assert recommendations[0].evidence
     assert "content" in recommendations[0].model_scores
     assert "collaborative" in recommendations[0].model_scores

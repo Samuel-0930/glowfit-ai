@@ -13,8 +13,9 @@ Phase 2 starts that scale-up path with Amazon Beauty-style record adapters, a JS
 ## Modeling Progression
 
 1. Baselines: popularity and average rating.
-2. Core models: content-based scoring and collaborative filtering path.
-3. Advanced model: Two-Tower Retrieval for preference-product matching.
+2. Core baselines: tag-based content scoring and product-level observed-review average scoring.
+3. Retrieval-inspired baseline: hash-vector cosine similarity for preference-product matching;
+   it is not a trained Two-Tower model.
 4. Explanation layer: retrieved evidence transformed into a grounded deterministic report.
 
 ## Evaluation Snapshot
@@ -34,7 +35,9 @@ Public artifact evaluation now uses the same metrics after processed data is gen
 
 ## Product Experience
 
-The demo opens directly to a report-first workspace. A reviewer can see the user profile, top recommendation, evidence snippets, model scores, and product comparison without reading code first.
+The demo opens to a profile-first workspace. After entering skin conditions, a reviewer can inspect
+the API-backed top recommendation, evidence snippets, model scores, and product comparison without
+reading code first.
 
 ## Phase 2
 
