@@ -6,16 +6,16 @@
 
 GlowFit AI는 화장품 리뷰와 상품 속성 데이터를 기반으로 사용자의 피부 타입, 고민, 선호 제형, 향 민감도, 예산, 회피 조건을 반영해 제품을 랭킹합니다. 단순히 정해진 결과를 보여주는 데모가 아니라, 입력 조건이 바뀌면 추천 후보와 점수, 리뷰 근거, 비교 화면이 함께 바뀌도록 구성했습니다.
 
-[Notion 포트폴리오 보기](https://app.notion.com/p/3746f7e3d82881919c76e7340a8a508a)
+[Notion 포트폴리오 보기](https://app.notion.com/p/3996f7e3d828811fa0d7e358a783d6f6)
 
 ## 현재 데모에서 볼 수 있는 것
 
 | 화면 | 역할 |
 | --- | --- |
 | 추천 | 사용자가 피부 조건을 직접 선택하고 상위 3개 제품을 추천받습니다. |
-| 비교 | fit score, confidence, budget, review, hybrid signal을 원형 점수와 bar로 비교합니다. |
+| 비교 | fit·confidence 원형 점수, 근거·주의 항목, 모델별 랭킹 신호를 비교합니다. |
 | 리뷰 분석 | 추천에 사용된 리뷰 snippet과 aspect coverage를 확인합니다. |
-| 실험 | public artifact evaluation 결과와 ranking metric을 확인합니다. |
+| 실험 | 커밋된 샘플 카탈로그를 기준으로 재생성한 오프라인 평가 결과를 확인합니다. |
 
 ## 제품 흐름
 
@@ -34,17 +34,17 @@ flowchart LR
 | 영역 | 구현 내용 |
 | --- | --- |
 | 입력 자유도 | 피부 타입, concerns, texture, fragrance sensitivity, budget, avoid 조건을 직접 선택 |
-| 동적 랭킹 | `inferRecommendations()`가 입력 profile과 상품 match tag, 리뷰 evidence, 예산 조건을 조합해 score 계산 |
+| 동적 랭킹 | FastAPI가 입력 profile과 상품 tag, 리뷰 evidence, 예산 조건을 조합해 score 계산 |
 | 설명 가능성 | 추천 결과마다 reasons, cautions, evidence snippet, model signal을 함께 표시 |
 | 비교 UX | fit/confidence를 원형 score로 보여주고, model signal은 동적 bar로 비교 |
-| 한글 제품 경험 | 채용자 설명을 노골적으로 전면에 두기보다 실제 사용자용 제품 화면처럼 구성 |
+| 한국어 정보 구조 | 탐색, 입력, 안내 문구는 한국어로 제공하고 카탈로그 원문과 리뷰 근거는 보존 |
 | 검증 | Next build, Vitest, Python test suite, ranking evaluation script |
 
 ## 데모 화면
 
 | 추천 변화 | 후보 비교 | 리뷰 분석 |
 | --- | --- | --- |
-| ![Profile driven recommendation](docs/assets/browser-flow/profile-oily-script.png) | ![Compare ranked products](docs/assets/browser-flow/02-compare.png) | ![Review insights](docs/assets/browser-flow/03-insights.png) |
+| ![Supabase-backed recommendation](docs/assets/browser-flow/profile-oily-script.png) | ![Compare current ranked products](docs/assets/browser-flow/02-compare.png) | ![Review insights from the current catalog](docs/assets/browser-flow/03-insights.png) |
 
 ## 왜 이 프로젝트가 포트폴리오로 강한가
 
@@ -55,38 +55,47 @@ flowchart LR
 
 ## 모델/랭킹 구조
 
-현재 프론트엔드 데모는 client-side inference로 동작합니다. Supabase 같은 DB를 붙이면 아래 구조로 자연스럽게 확장할 수 있습니다.
+프론트엔드는 FastAPI의 `/recommendations`를 호출합니다. API는 기본 JSON 카탈로그 또는
+Supabase 카탈로그를 선택해 로드하고, 원격 카탈로그는 짧은 TTL 캐시로 재사용합니다.
+Supabase에 연결할 수 없으면 추천을 mock 결과로 대체하지 않고 `503` 오류를 반환합니다.
 
 ```mermaid
 flowchart TB
-    A["products table"] --> D["ranking API"]
-    B["reviews table"] --> D
-    C["product_tags table"] --> D
-    D --> E["hybrid score"]
-    E --> F["top-3 recommendations"]
-    F --> G["evidence-backed UI"]
+    A["Next.js client"] --> B["FastAPI /recommendations"]
+    C["JSON sample catalog"] --> D["Catalog repository"]
+    E["Supabase: products / tags / reviews"] --> D
+    D --> F["TTL cache + hybrid ranking"]
+    B --> F
+    F --> G["top-3 + review evidence"]
+    G --> H["evidence-backed UI"]
 ```
 
-| Signal | 의미 |
+| Signal | 현재 구현 |
 | --- | --- |
-| profile | 피부 타입, 고민, 제형 조건과 상품 tag의 일치도 |
-| review | 선택된 리뷰 evidence의 relevance |
-| budget | 예산 조건 충족 여부 |
-| hybrid | profile, review, rating, review count, budget penalty를 합친 최종 score |
+| popularity | 상품의 `review_count`를 정규화한 베이스라인 |
+| rating | 상품의 `average_rating`을 정규화한 베이스라인 |
+| collaborative | 사용자-아이템 행렬 학습이 아닌, 관측 리뷰 평점 평균 베이스라인 |
+| content | 프로필-상품 tag 겹침에 예산 보너스와 회피 조건 패널티를 더한 점수 |
+| two_tower | 학습된 two-tower가 아닌 해시 기반 텍스트 벡터 코사인 유사도 베이스라인 |
+| fit score | content 0.40, two_tower 0.30, collaborative 0.15, popularity 0.10, 리뷰 근거 보너스를 합친 최종 순위 점수 |
 
 ## 실행 방법
 
 Python 의존성 설치:
 
 ```bash
-python -m pip install -e ".[dev]"
+python3 -m pip install -e ".[dev]"
 ```
 
 API 실행:
 
 ```bash
-uvicorn api.main:app --reload --port 8000
+python3 -m uvicorn api.main:app --reload --port 8000
 ```
+
+Supabase 카탈로그를 사용하려면 `.env.example`을 참고해 `GLOWFIT_CATALOG_SOURCE=supabase`,
+`SUPABASE_URL`, `SUPABASE_SECRET_KEY`를 API 서버 환경에만 설정합니다. 연결 전 확인 방법과
+로컬/호스팅 프로젝트별 설정은 [Supabase 문서](docs/supabase.md)를 참고하세요.
 
 추천 API 호출:
 
@@ -120,7 +129,7 @@ npm --prefix frontend run dev
 Amazon Beauty 스타일 JSONL을 GlowFit artifact로 변환:
 
 ```bash
-python scripts/ingest_amazon_beauty_jsonl.py \
+python3 scripts/ingest_amazon_beauty_jsonl.py \
   --metadata sample_data/raw_amazon_metadata.jsonl \
   --reviews sample_data/raw_amazon_reviews.jsonl \
   --output-dir data/processed/amazon_beauty_sample
@@ -129,13 +138,13 @@ python scripts/ingest_amazon_beauty_jsonl.py \
 Hugging Face 공개 데이터 preview:
 
 ```bash
-python scripts/fetch_huggingface_preview.py --length 25
+python3 scripts/fetch_huggingface_preview.py --length 25
 ```
 
 ASIN 기준으로 상품과 리뷰가 매칭된 public mini dataset 생성:
 
 ```bash
-python scripts/fetch_huggingface_joined_preview.py \
+python3 scripts/fetch_huggingface_joined_preview.py \
   --target-matches 25 \
   --max-review-rows 250
 ```
@@ -143,7 +152,7 @@ python scripts/fetch_huggingface_joined_preview.py \
 processed public artifact 평가:
 
 ```bash
-python scripts/evaluate_public_artifacts.py \
+python3 scripts/evaluate_public_artifacts.py \
   --artifact-dir data/processed/hf_joined_preview \
   --output artifacts/public_evaluation.json
 ```
@@ -151,8 +160,8 @@ python scripts/evaluate_public_artifacts.py \
 ## 검증
 
 ```bash
-uv run ruff check .
-uv run pytest -q
+python3 -m ruff check .
+python3 -m pytest -q
 npm --prefix frontend test
 npm --prefix frontend run build
 ```
@@ -162,8 +171,15 @@ npm --prefix frontend run build
 | Check | Result |
 | --- | --- |
 | Frontend build | passed |
-| Frontend tests | 3 passed |
-| Python tests | 31 passed |
+| Frontend tests | 4 passed |
+| Python tests | 40 passed |
+
+## 배포
+
+개인 포트폴리오 데모는 Vercel Hobby에서 프론트엔드와 FastAPI를 별도 프로젝트로 배포할 수 있습니다.
+API는 Vercel Python Runtime의 `api/index.py` 진입점을 사용하며, 요청 제한은 서버 메모리가 아닌
+Vercel Firewall에서 적용합니다. 환경 변수와 Firewall 규칙은 [배포 체크리스트](docs/deployment.md)를
+따릅니다.
 
 ## 문서
 
@@ -173,3 +189,6 @@ npm --prefix frontend run build
 - Joined public preview: [docs/huggingface-joined-preview.md](docs/huggingface-joined-preview.md)
 - Evaluation: [docs/evaluation.md](docs/evaluation.md)
 - Portfolio case study: [docs/portfolio-case-study.md](docs/portfolio-case-study.md)
+- Supabase catalog: [docs/supabase.md](docs/supabase.md)
+- Deployment checklist: [docs/deployment.md](docs/deployment.md)
+- Security test plan: [docs/security-test-plan.md](docs/security-test-plan.md)

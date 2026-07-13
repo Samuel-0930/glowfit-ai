@@ -1,12 +1,28 @@
 import "@testing-library/jest-dom/vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import Page from "../app/page";
 import { inferRecommendations } from "../lib/mock-data";
 
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
 describe("recommendation flow", () => {
   it("starts empty and renders recommendations after the profile is configured", async () => {
+    const report = inferRecommendations({
+      skin_type: "oily",
+      concerns: ["acne", "pores"],
+      texture: "watery",
+      fragrance_sensitivity: "medium",
+      budget_max_usd: 25,
+      avoid: []
+    });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({ ok: true, json: async () => report })
+    );
     window.history.replaceState(null, "", "#recommend");
     render(<Page />);
 
@@ -17,10 +33,65 @@ describe("recommendation flow", () => {
     fireEvent.change(screen.getByLabelText("향 민감도"), { target: { value: "medium" } });
     fireEvent.click(screen.getByRole("button", { name: "acne" }));
     fireEvent.click(screen.getByRole("button", { name: "pores" }));
+    fireEvent.click(screen.getByRole("button", { name: "추천 받기" }));
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Pore Reset Water Serum" })).toBeInTheDocument();
     });
+  });
+
+  it("shows an API error instead of presenting a mock result", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: false,
+        json: async () => ({ detail: "추천 카탈로그에 일시적으로 연결할 수 없습니다." })
+      })
+    );
+    window.history.replaceState(null, "", "#recommend");
+    render(<Page />);
+
+    fireEvent.change(screen.getByLabelText("피부 타입"), { target: { value: "dry" } });
+    fireEvent.change(screen.getByLabelText("선호 제형"), { target: { value: "light" } });
+    fireEvent.change(screen.getByLabelText("향 민감도"), { target: { value: "high" } });
+    fireEvent.click(screen.getByRole("button", { name: "redness" }));
+    fireEvent.click(screen.getByRole("button", { name: "추천 받기" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("일시적으로 연결할 수 없습니다");
+    expect(screen.getByText(/피부 타입, 고민, 제형/)).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "상위 추천 3개" })).not.toBeInTheDocument();
+  });
+
+  it("shows an empty-result state when the API returns no recommendations", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          summary: "No recommendations were generated for the current profile.",
+          recommendations: [],
+          generation_mode: "api-hybrid-ranking",
+          metadata: {
+            data_source: "supabase",
+            product_count: 0,
+            review_count: 0,
+            requested_limit: 3,
+            returned_count: 0,
+            top_product_id: null
+          }
+        })
+      })
+    );
+    window.history.replaceState(null, "", "#recommend");
+    render(<Page />);
+
+    fireEvent.change(screen.getByLabelText("피부 타입"), { target: { value: "dry" } });
+    fireEvent.change(screen.getByLabelText("선호 제형"), { target: { value: "light" } });
+    fireEvent.change(screen.getByLabelText("향 민감도"), { target: { value: "high" } });
+    fireEvent.click(screen.getByRole("button", { name: "redness" }));
+    fireEvent.click(screen.getByRole("button", { name: "추천 받기" }));
+
+    expect(await screen.findByText(/현재 조건에 맞는 추천 상품이 없습니다/)).toBeInTheDocument();
   });
 
   it("opens compare and insights tabs from hash navigation", async () => {

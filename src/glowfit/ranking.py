@@ -61,7 +61,7 @@ def recommend(
         recommendations.append(
             Recommendation(
                 product=product,
-                fit_score=round(score, 4),
+                fit_score=round(min(score, 1.0), 4),
                 confidence=round(min(0.55 + len(snippets) * 0.1, 0.95), 2),
                 reasons=reasons or product.attributes[:2],
                 cautions=cautions,

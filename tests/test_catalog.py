@@ -3,8 +3,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any
+from urllib.error import URLError
 
 from src.glowfit.catalog import (
+    CachedCatalogRepository,
+    CatalogUnavailableError,
     JsonCatalogRepository,
     SupabaseCatalogRepository,
     get_catalog_repository,
@@ -124,3 +127,51 @@ def test_supabase_catalog_repository_uses_bearer_header_for_legacy_key(
 
     assert catalog.products == ()
     assert catalog.reviews == ()
+
+
+def test_cached_catalog_repository_uses_one_load_within_ttl() -> None:
+    class FakeRepository:
+        calls = 0
+
+        def load(self):
+            self.calls += 1
+            return JsonCatalogRepository(Path("sample_data")).load()
+
+    repository = FakeRepository()
+    catalog = CachedCatalogRepository(repository=repository, ttl_seconds=60)
+
+    assert catalog.load() is catalog.load()
+    assert repository.calls == 1
+
+
+def test_cached_catalog_repository_raises_clear_error_when_source_is_unavailable() -> None:
+    class OfflineRepository:
+        def load(self):
+            raise URLError("offline")
+
+    catalog = CachedCatalogRepository(repository=OfflineRepository(), ttl_seconds=60)
+
+    try:
+        catalog.load()
+    except CatalogUnavailableError as error:
+        assert "temporarily unavailable" in str(error)
+    else:
+        raise AssertionError("Expected unavailable catalog error")
+
+
+def test_cached_catalog_repository_serves_stale_catalog_when_refresh_fails() -> None:
+    class FlakyRepository:
+        calls = 0
+
+        def load(self):
+            self.calls += 1
+            if self.calls == 1:
+                return JsonCatalogRepository(Path("sample_data")).load()
+            raise URLError("offline")
+
+    repository = FlakyRepository()
+    catalog = CachedCatalogRepository(repository=repository, ttl_seconds=0)
+
+    initial = catalog.load()
+    assert catalog.load() is initial
+    assert repository.calls == 2

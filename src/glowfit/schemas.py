@@ -1,6 +1,14 @@
 from __future__ import annotations
 
+from typing import Annotated, Literal
+
 from pydantic import BaseModel, Field
+
+SkinType = Literal["dry", "oily", "combination", "sensitive"]
+Texture = Literal["light", "watery", "gel", "cream", "lotion"]
+FragranceSensitivity = Literal["low", "medium", "high"]
+PreferenceTerm = Annotated[str, Field(min_length=1, max_length=50)]
+ProductId = Annotated[str, Field(min_length=1, max_length=100)]
 
 
 class Product(BaseModel):
@@ -24,12 +32,12 @@ class Review(BaseModel):
 
 
 class UserPreferences(BaseModel):
-    skin_type: str
-    concerns: list[str] = Field(default_factory=list)
-    texture: str
-    fragrance_sensitivity: str
-    budget_max_usd: float
-    avoid: list[str] = Field(default_factory=list)
+    skin_type: SkinType
+    concerns: list[PreferenceTerm] = Field(default_factory=list, max_length=10)
+    texture: Texture
+    fragrance_sensitivity: FragranceSensitivity
+    budget_max_usd: float = Field(ge=0, le=500)
+    avoid: list[PreferenceTerm] = Field(default_factory=list, max_length=10)
 
 
 class EvidenceSnippet(BaseModel):
