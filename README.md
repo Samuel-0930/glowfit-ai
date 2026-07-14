@@ -2,9 +2,11 @@
 
 [![CI](https://github.com/Samuel-0930/glowfit-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Samuel-0930/glowfit-ai/actions/workflows/ci.yml)
 
-**피부 프로필을 입력하면 리뷰 근거와 함께 상위 제품을 동적으로 추천하는 뷰티 추천 시스템**
+**피부 프로필을 입력하면 제품 순위와 리뷰 근거를 함께 설명하는 뷰티 추천 시스템**
 
-GlowFit AI는 화장품 리뷰와 상품 속성 데이터를 기반으로 사용자의 피부 타입, 고민, 선호 제형, 향 민감도, 예산, 회피 조건을 반영해 제품을 랭킹합니다. 단순히 정해진 결과를 보여주는 데모가 아니라, 입력 조건이 바뀌면 추천 후보와 점수, 리뷰 근거, 비교 화면이 함께 바뀌도록 구성했습니다.
+GlowFit AI는 화장품 리뷰와 상품 속성 데이터를 기반으로 사용자의 피부 타입, 고민, 선호 제형, 향 민감도, 예산, 회피 조건을 반영해 제품을 랭킹합니다. 단순히 정해진 결과를 보여주는 데모가 아니라, 입력 조건이 바뀌면 추천 후보·적합도·리뷰 근거·비교 결과가 함께 바뀌도록 구성했습니다.
+
+현재 운영 데모는 Supabase에 적재한 **100개 페이스 스킨케어 제품과 1,074개 리뷰**를 사용합니다. 추천 점수만 제시하지 않고, 해당 결과가 나온 이유와 확인할 주의 신호를 제품 UI에서 바로 확인할 수 있게 설계했습니다.
 
 [라이브 데모](https://glowfit-web.vercel.app) · [API Health](https://glowfit-api.vercel.app/health) · [Notion 포트폴리오 보기](https://app.notion.com/p/3996f7e3d828811fa0d7e358a783d6f6)
 
@@ -15,7 +17,8 @@ GlowFit AI는 화장품 리뷰와 상품 속성 데이터를 기반으로 사용
 | 추천 | 사용자가 피부 조건을 직접 선택하고 상위 3개 제품을 추천받습니다. |
 | 비교 | fit·근거 강도 원형 점수, 근거·주의 항목, 모델별 랭킹 신호를 비교합니다. |
 | 리뷰 분석 | 추천에 사용된 리뷰 snippet과 aspect coverage를 확인합니다. |
-| 실험 | 커밋된 샘플 카탈로그를 기준으로 재생성한 오프라인 평가 결과를 확인합니다. |
+| 실험 | 재현 가능한 오프라인 평가 결과와 해석 가능 여부를 함께 확인합니다. |
+| 구성 | 데이터·추천·운영 검증 흐름과 포트폴리오 문서를 한 곳에서 확인합니다. |
 
 ## 제품 흐름
 
@@ -38,20 +41,20 @@ flowchart LR
 | 설명 가능성 | 추천 결과마다 reasons, cautions, evidence snippet, model signal을 함께 표시 |
 | 비교 UX | fit score와 리뷰 근거 개수 기반의 근거 강도를 원형 score로 보여주고, model signal은 동적 bar로 비교 |
 | 한국어 정보 구조 | 탐색, 입력, 안내 문구는 한국어로 제공하고 카탈로그 원문과 리뷰 근거는 보존 |
-| 검증 | Next build, Vitest, Python test suite, ranking evaluation script |
+| 운영 검증 | GitHub Actions CI와 배포 후 smoke check로 공개 웹·API 흐름 확인 |
 
 ## 데모 화면
 
 | 추천 변화 | 후보 비교 | 리뷰 분석 |
 | --- | --- | --- |
-| ![Supabase-backed recommendation](docs/assets/browser-flow/profile-oily-script.png) | ![Compare current ranked products](docs/assets/browser-flow/02-compare.png) | ![Review insights from the current catalog](docs/assets/browser-flow/03-insights.png) |
+| ![Skin profile and evidence-backed recommendation](docs/assets/browser-flow/01-recommendation.png) | ![Ranked candidates compared by fit and evidence](docs/assets/browser-flow/02-comparison.png) | ![Review evidence and aspect coverage](docs/assets/browser-flow/03-review-insights.png) |
 
 ## 왜 이 프로젝트가 포트폴리오로 강한가
 
 - **추천 시스템 문제를 제품 흐름으로 연결했습니다.** 입력 profile, ranking score, 추천 결과, 리뷰 근거, 비교 화면이 하나의 사용자 여정으로 이어집니다.
 - **정답 고정 데모를 피했습니다.** 조건을 바꾸면 추천 후보와 점수도 바뀌는 구조라 모델/랭킹 로직이 화면에서 드러납니다.
 - **설명 가능한 추천을 구현했습니다.** 단순 점수 대신 review evidence와 aspect tag를 함께 보여줍니다.
-- **데이터 파이프라인과 평가를 갖췄습니다.** 공개 데이터 preview, ASIN join, offline ranking evaluation을 별도 script와 문서로 관리하고, 표본·relevance 분포가 비교에 부적합하면 결과를 탐색용으로 표시합니다.
+- **데이터 파이프라인과 평가를 갖췄습니다.** 공개 데이터 preview, ASIN join, Supabase 적재, offline ranking evaluation을 별도 script와 문서로 관리하고, 표본·relevance 분포가 비교에 부적합하면 결과를 탐색용으로 표시합니다.
 - **데모 운영 조건까지 구현했습니다.** 별도 Vercel 프로젝트의 Next.js/FastAPI 배포, 명시적 CORS·trusted host, TTL cache의 stale fallback, Firewall 기반 요청 제한을 적용했습니다.
 
 ## 모델/랭킹 구조
@@ -79,6 +82,8 @@ flowchart TB
 | content | 프로필-상품 tag 겹침에 예산 보너스와 회피 조건 패널티를 더한 점수 |
 | hash_similarity | 해시 기반 텍스트 벡터 코사인 유사도 베이스라인 |
 | fit score | content 0.40, hash_similarity 0.30, review_average 0.15, popularity 0.10, 리뷰 근거 보너스를 합친 최종 순위 점수 |
+
+`fit score`와 `근거 강도`는 **현재 후보를 정렬하고 설명하기 위한 신호**입니다. 모델 정확도나 일반화 성능을 뜻하지 않으며, 개별 신호가 `1.0`인 경우에도 해당 입력에서 정규화된 랭킹 값일 뿐 성능 100%를 의미하지 않습니다.
 
 ## 실행 방법
 
@@ -195,23 +200,17 @@ npm --prefix frontend test
 npm --prefix frontend run build
 ```
 
-최근 확인:
-
-| Check | Result |
-| --- | --- |
-| Frontend build | passed |
-| Frontend tests | 5 passed |
-| Python tests | 50 passed |
+검증은 GitHub Actions에서 Python test suite, 프론트엔드 타입·테스트, 공개 운영 URL smoke check를 순서대로 실행합니다. 로컬 실행 방법은 위 명령을 따르고, 최종 상태는 CI와 Vercel 배포 상태를 기준으로 확인합니다.
 
 ## 배포
 
-개인 포트폴리오 데모는 Vercel Hobby에서 프론트엔드와 FastAPI를 별도 프로젝트로 배포할 수 있습니다.
+개인 포트폴리오 데모는 Vercel Hobby에서 프론트엔드와 FastAPI를 별도 프로젝트로 배포합니다.
 API는 Vercel Python Runtime의 `api/index.py` 진입점을 사용하며, 요청 제한은 서버 메모리가 아닌
 Vercel Firewall에서 적용합니다. 환경 변수와 Firewall 규칙은 [배포 체크리스트](docs/deployment.md)를
 따릅니다.
 
-`main` 배포 후에는 GitHub Actions가 공개 프론트엔드와 API를 실제 요청으로 확인하는 smoke check를
-수행합니다. 배포 상태는 Vercel 체크와 함께 확인합니다.
+`main` 배포 후에는 GitHub Actions가 [공개 프론트엔드](https://glowfit-web.vercel.app)와
+[API](https://glowfit-api.vercel.app/health)를 실제 요청으로 확인하는 smoke check를 수행합니다.
 
 ## 문서
 
