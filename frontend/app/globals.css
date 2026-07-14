@@ -228,6 +228,11 @@ a:focus-visible {
   height: fit-content;
 }
 
+.preference-scroll,
+.preference-action {
+  display: contents;
+}
+
 .panel-heading {
   display: grid;
   gap: var(--space-1);
@@ -441,6 +446,43 @@ select:hover {
   background: var(--fill-strong);
   color: var(--label-assistive);
   cursor: not-allowed;
+}
+
+@media (min-width: 992px) {
+  .workspace-sidebar {
+    position: sticky;
+    top: 96px;
+  }
+
+  .preference-panel {
+    gap: 0;
+    grid-template-rows: minmax(0, 1fr) auto;
+    height: calc(100vh - 116px);
+    max-height: 920px;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .preference-scroll {
+    display: grid;
+    gap: var(--space-5);
+    min-height: 0;
+    overflow-y: auto;
+    padding: var(--space-6) var(--space-6) var(--space-4);
+    scrollbar-color: var(--line-strong) transparent;
+    scrollbar-width: thin;
+  }
+
+  .preference-action {
+    background: var(--background-normal);
+    border-top: 1px solid var(--line-normal);
+    display: block;
+    padding: var(--space-3) var(--space-6) var(--space-6);
+  }
+
+  .preference-action .primary-button {
+    width: 100%;
+  }
 }
 
 .empty-state {
