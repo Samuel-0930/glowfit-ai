@@ -1,6 +1,7 @@
 import { EvidencePanel } from "./evidence-panel";
 import { ProductCard } from "./product-card";
-import type { ReportResponse } from "../lib/types";
+import { presentLabel } from "../lib/presentation";
+import type { CatalogHealth, ReportResponse } from "../lib/types";
 
 const modelLabels: Record<string, string> = {
   profile: "프로필 적합도",
@@ -14,11 +15,33 @@ const modelLabels: Record<string, string> = {
   hash_similarity: "해시 텍스트 유사도"
 };
 
-export function RecommendationReport({ report }: { report: ReportResponse | null }) {
+export function RecommendationReport({
+  report,
+  catalogHealth
+}: {
+  report: ReportResponse | null;
+  catalogHealth: CatalogHealth | null;
+}) {
   if (!report) {
     return (
       <section className="empty-state">
-        <p>피부 타입, 고민, 제형, 예산을 선택하면 맞춤 추천 결과가 이곳에 표시됩니다.</p>
+        <div className="empty-state-content">
+          <p className="eyebrow">근거 기반 스킨케어 추천</p>
+          <h1>나의 피부 조건을<br />추천 근거로 바꿔보세요.</h1>
+          <p>
+            피부 타입과 고민을 고르면, 제품 순위뿐 아니라 선택된 리뷰 근거와 확인할 점까지 함께 보여드립니다.
+          </p>
+          <div className="empty-steps" aria-label="추천 흐름">
+            <span>01 프로필 입력</span>
+            <span>02 근거 기반 랭킹</span>
+            <span>03 리뷰로 결과 확인</span>
+          </div>
+          {catalogHealth && (
+            <p className="catalog-status" role="status">
+              운영 데이터 연결됨 · {catalogHealth.product_count}개 제품 · 리뷰 {catalogHealth.review_count.toLocaleString()}개
+            </p>
+          )}
+        </div>
       </section>
     );
   }
@@ -51,7 +74,7 @@ export function RecommendationReport({ report }: { report: ReportResponse | null
           <div className="reason-list" aria-label="추천 핵심 근거">
             {top.reasons.map((reason) => (
               <span className="reason-tag" key={reason}>
-                {reason}
+                {presentLabel(reason)}
               </span>
             ))}
           </div>

@@ -26,13 +26,13 @@ describe("recommendation flow", () => {
     window.history.replaceState(null, "", "#recommend");
     render(<Page />);
 
-    expect(screen.getByText(/피부 타입, 고민, 제형/)).toBeInTheDocument();
+    expect(screen.getByText(/나의 피부 조건을/)).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText("피부 타입"), { target: { value: "oily" } });
     fireEvent.change(screen.getByLabelText("선호 제형"), { target: { value: "watery" } });
     fireEvent.change(screen.getByLabelText("향 민감도"), { target: { value: "medium" } });
-    fireEvent.click(screen.getByRole("button", { name: "acne" }));
-    fireEvent.click(screen.getByRole("button", { name: "pores" }));
+    fireEvent.click(screen.getByRole("button", { name: "트러블" }));
+    fireEvent.click(screen.getByRole("button", { name: "모공" }));
     fireEvent.click(screen.getByRole("button", { name: "추천 받기" }));
 
     await waitFor(() => {
@@ -56,11 +56,11 @@ describe("recommendation flow", () => {
     fireEvent.change(screen.getByLabelText("피부 타입"), { target: { value: "dry" } });
     fireEvent.change(screen.getByLabelText("선호 제형"), { target: { value: "light" } });
     fireEvent.change(screen.getByLabelText("향 민감도"), { target: { value: "high" } });
-    fireEvent.click(screen.getByRole("button", { name: "redness" }));
+    fireEvent.click(screen.getByRole("button", { name: "붉은기" }));
     fireEvent.click(screen.getByRole("button", { name: "추천 받기" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent("일시적으로 연결할 수 없습니다");
-    expect(screen.getByText(/피부 타입, 고민, 제형/)).toBeInTheDocument();
+    expect(screen.getByText(/나의 피부 조건을/)).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "상위 추천 3개" })).not.toBeInTheDocument();
   });
 
@@ -90,7 +90,7 @@ describe("recommendation flow", () => {
     fireEvent.change(screen.getByLabelText("피부 타입"), { target: { value: "dry" } });
     fireEvent.change(screen.getByLabelText("선호 제형"), { target: { value: "light" } });
     fireEvent.change(screen.getByLabelText("향 민감도"), { target: { value: "high" } });
-    fireEvent.click(screen.getByRole("button", { name: "redness" }));
+    fireEvent.click(screen.getByRole("button", { name: "붉은기" }));
     fireEvent.click(screen.getByRole("button", { name: "추천 받기" }));
 
     expect(await screen.findByText(/현재 조건에 맞는 추천 상품이 없습니다/)).toBeInTheDocument();

@@ -1,4 +1,5 @@
 import { avoidOptions, concernOptions, textureOptions } from "../lib/mock-data";
+import { presentLabel } from "../lib/presentation";
 import type { UserPreferences } from "../lib/types";
 
 type Props = {
@@ -39,7 +40,7 @@ export function PreferenceForm({ preferences, onChange, onGenerate, isLoading }:
           <option value="">선택</option>
           {skinTypes.map((type) => (
             <option key={type} value={type}>
-              {type}
+              {presentLabel(type)}
             </option>
           ))}
         </select>
@@ -54,7 +55,7 @@ export function PreferenceForm({ preferences, onChange, onGenerate, isLoading }:
           <option value="">선택</option>
           {textureOptions.map((texture) => (
             <option key={texture} value={texture}>
-              {texture}
+              {presentLabel(texture)}
             </option>
           ))}
         </select>
@@ -69,7 +70,7 @@ export function PreferenceForm({ preferences, onChange, onGenerate, isLoading }:
           <option value="">선택</option>
           {fragranceLevels.map((level) => (
             <option key={level} value={level}>
-              {level}
+              {presentLabel(level)}
             </option>
           ))}
         </select>
@@ -104,7 +105,7 @@ export function PreferenceForm({ preferences, onChange, onGenerate, isLoading }:
               }
               type="button"
             >
-              {concern}
+              {presentLabel(concern)}
             </button>
           ))}
         </div>
@@ -121,7 +122,7 @@ export function PreferenceForm({ preferences, onChange, onGenerate, isLoading }:
               onClick={() => onChange({ ...preferences, avoid: toggleValue(preferences.avoid, avoid) })}
               type="button"
             >
-              {avoid}
+              {presentLabel(avoid)}
             </button>
           ))}
         </div>

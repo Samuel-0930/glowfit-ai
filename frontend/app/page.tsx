@@ -6,10 +6,10 @@ import { AppShell } from "../components/app-shell";
 import { PreferenceForm } from "../components/preference-form";
 import { ProductComparison } from "../components/product-comparison";
 import { RecommendationReport } from "../components/recommendation-report";
-import { fetchReport } from "../lib/api";
+import { fetchCatalogHealth, fetchReport } from "../lib/api";
 import { defaultPreferences } from "../lib/mock-data";
 import { samplePublicEvaluation } from "../lib/sample-public-evaluation";
-import type { ReportResponse, UserPreferences } from "../lib/types";
+import type { CatalogHealth, ReportResponse, UserPreferences } from "../lib/types";
 
 type TabId = "recommend" | "compare" | "insights" | "experiments" | "portfolio";
 
@@ -30,6 +30,7 @@ export default function Page() {
   const [requestError, setRequestError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<TabId>("recommend");
+  const [catalogHealth, setCatalogHealth] = useState<CatalogHealth | null>(null);
 
   const currentReport = report;
   const recommendations = currentReport?.recommendations ?? [];
@@ -58,6 +59,10 @@ export default function Page() {
     syncTabFromHash();
     window.addEventListener("hashchange", syncTabFromHash);
     return () => window.removeEventListener("hashchange", syncTabFromHash);
+  }, []);
+
+  useEffect(() => {
+    void fetchCatalogHealth().then(setCatalogHealth);
   }, []);
 
   async function handleGenerate() {
@@ -96,7 +101,7 @@ export default function Page() {
               {requestError}
             </p>
           )}
-          <RecommendationReport report={currentReport} />
+          <RecommendationReport catalogHealth={catalogHealth} report={currentReport} />
         </main>
       )}
 

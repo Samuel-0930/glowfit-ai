@@ -1,4 +1,5 @@
 import type { Recommendation } from "../lib/types";
+import { presentLabel } from "../lib/presentation";
 
 export function EvidencePanel({ recommendation }: { recommendation: Recommendation }) {
   return (
@@ -14,7 +15,7 @@ export function EvidencePanel({ recommendation }: { recommendation: Recommendati
           <div className="tag-row">
             {snippet.aspects.map((aspect) => (
               <span key={aspect} className="tag tag-soft">
-                {aspect}
+                {presentLabel(aspect)}
               </span>
             ))}
           </div>

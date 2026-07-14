@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { presentLabel } from "../lib/presentation";
 import type { Recommendation } from "../lib/types";
 
 export function ProductCard({
@@ -21,18 +22,18 @@ export function ProductCard({
         <p className="eyebrow">{product.brand}</p>
         <h3>{product.name}</h3>
         <p className="muted">
-          {product.category} · ${product.price_usd} · {product.average_rating.toFixed(1)}점 · 리뷰{" "}
+          {presentLabel(product.category)} · ${product.price_usd} · 평점 {product.average_rating.toFixed(1)} · 리뷰{" "}
           {product.review_count.toLocaleString()}개
         </p>
       </div>
       <div className="score-circle" style={{ "--score": recommendation.fit_score } as CSSProperties}>
         <strong>{Math.round(recommendation.fit_score * 100)}</strong>
-        <span>fit</span>
+        <span>적합도</span>
       </div>
       <div className="product-reasons" aria-label={`${product.name} 추천 근거`}>
         {recommendation.reasons.slice(0, 3).map((reason) => (
           <span key={reason} className="tag">
-            {reason}
+            {presentLabel(reason)}
           </span>
         ))}
       </div>

@@ -51,6 +51,13 @@ export type ReportResponse = {
   };
 };
 
+export type CatalogHealth = {
+  status: string;
+  data_source: string;
+  product_count: number;
+  review_count: number;
+};
+
 export type PublicEvaluationModel = {
   ranked_product_ids: string[];
   metrics: Record<string, number>;
