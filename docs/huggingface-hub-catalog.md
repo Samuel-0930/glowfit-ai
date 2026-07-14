@@ -44,8 +44,9 @@ toner, face mask, face oil 등의 신호가 있는 상품만 후보로 삼는다
 
 긴 원문 feature를 그대로 태그로 저장하지 않는다. `sensitive skin`, `fragrance free`, `calming`,
 `barrier care`, `light texture`처럼 제한된 canonical tag로 정규화하고, 제품 유형도 sunscreen,
-cleanser, serum 등으로 분류한다. 이 규칙은 추천 근거를 사람이 읽을 수 있는 짧은 표현으로 유지하기
-위한 데이터 품질 계약이다.
+cleanser, serum 등으로 분류한다. 상품명도 쉼표·구분자 뒤의 마케팅 문구를 제외한 짧은 표시명으로
+정규화한다. 이 규칙은 추천 근거와 제품 제목을 사람이 읽을 수 있는 짧은 표현으로 유지하기 위한
+데이터 품질 계약이다.
 
 ## 확인한 장애와 대체 원칙
 

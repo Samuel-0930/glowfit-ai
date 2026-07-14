@@ -189,10 +189,22 @@ def _canonical_attributes(record: dict[str, Any]) -> list[str]:
     ]
 
 
+def _display_name(name: str) -> str:
+    """Keep the product identity while removing marketplace marketing copy."""
+
+    primary_name = re.split(r"\s[-–—]\s|\s*\|\s*|,\s+", name, maxsplit=1)[0].strip()
+    primary_name = re.sub(r"\s+", " ", primary_name)
+    if len(primary_name) <= 72:
+        return primary_name
+    truncated = primary_name[:72].rsplit(" ", maxsplit=1)[0].rstrip(" ,-/")
+    return truncated or primary_name[:72]
+
+
 def _normalize_hub_product(record: dict[str, Any]) -> Product:
     product = parse_amazon_metadata_record(record)
     return product.model_copy(
         update={
+            "name": _display_name(product.name),
             "category": _category_from_product_text(product.name.lower()),
             "attributes": _canonical_attributes(record),
         }

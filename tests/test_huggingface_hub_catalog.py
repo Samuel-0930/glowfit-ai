@@ -3,10 +3,26 @@ from __future__ import annotations
 import json
 
 from src.glowfit.huggingface_hub_catalog import (
+    _display_name,
     collect_matching_reviews,
     select_hub_products,
     write_hub_catalog,
 )
+
+
+def test_display_name_removes_marketplace_copy_and_preserves_product_identity() -> None:
+    assert (
+        _display_name(
+            "Yes To Face Wipes for Women and Men, Sensitive Facial Cleansing Wipes for use"
+        )
+        == "Yes To Face Wipes for Women and Men"
+    )
+    assert _display_name("[SKIN&LAB] Barrierderm Milky Serum | Infused with Milk Ceramide") == (
+        "[SKIN&LAB] Barrierderm Milky Serum"
+    )
+    assert _display_name("Colonial Dames High Potency 50,000 IU Vitamin E Moisturizer") == (
+        "Colonial Dames High Potency 50,000 IU Vitamin E Moisturizer"
+    )
 
 
 def test_select_hub_products_keeps_high_review_skincare_products() -> None:
