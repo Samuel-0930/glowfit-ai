@@ -1,5 +1,19 @@
 # GlowFit AI Portfolio Case Study
 
+## Portfolio Snapshot
+
+- Live demo: https://glowfit-web.vercel.app
+- Demo video: [docs/assets/glowfit-demo.webm](assets/glowfit-demo.webm)
+- Repository guide: [README](../README.md)
+- Stack: Next.js, FastAPI, Supabase, Vercel, GitHub Actions
+- Production catalog: 100 face-skincare products, 1,074 reviews
+
+### Resume-ready description
+
+> Next.js·FastAPI·Supabase·Vercel로 구현한 설명 가능한 스킨케어 추천 시스템. 피부 프로필을 반영해 상위 3개를 동적으로 랭킹하고, 점수만 제시하지 않고 제품 태그·리뷰 snippet·주의 신호로 추천 근거를 함께 제공했다. 100개 제품과 1,074개 리뷰를 운영 카탈로그로 적재하고 GitHub Actions의 배포 후 smoke check를 구성했다.
+
+이 프로젝트의 핵심은 “추천 결과”가 아니라 **입력 → 랭킹 → 근거 검증**이 연결된 사용자 경험을 만들었다는 점이다. 데모에서는 빠른 체험 프로필을 선택해 실제 운영 API가 반환하는 후보, 비교 기준, 리뷰 근거를 차례로 확인할 수 있다.
+
 ## Problem
 
 Beauty product shoppers often rely on dense review pages to decide whether a product fits their skin type, texture preference, fragrance sensitivity, and budget. GlowFit AI turns review evidence into an explainable recommendation report.
