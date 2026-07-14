@@ -151,6 +151,16 @@ uv run --extra ingestion python scripts/fetch_huggingface_hub_catalog.py \
   --max-review-rows 100000
 ```
 
+생성한 artifact를 Supabase용 seed SQL로 변환합니다. `--replace`는 기존 데모 카탈로그를 같은
+트랜잭션 안에서 교체하므로, 운영 전환 시에만 명시적으로 사용합니다.
+
+```bash
+python3 scripts/generate_supabase_seed.py \
+  --artifact-dir data/processed/hf_hub_catalog \
+  --output data/processed/hf_hub_catalog/supabase_seed.sql \
+  --replace
+```
+
 ASIN 기준으로 상품과 리뷰가 매칭된 public mini dataset 생성:
 
 ```bash

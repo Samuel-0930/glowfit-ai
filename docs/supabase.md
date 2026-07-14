@@ -23,6 +23,8 @@ tags, and reviews from Supabase instead.
 
 1. Apply `supabase/migrations/20260710234242_create_glowfit_catalog.sql` and `supabase/seed.sql`
    to the intended project using the Supabase CLI or SQL Editor.
+   To replace the demo rows with a validated Hugging Face artifact, generate a transactional seed
+   file with `scripts/generate_supabase_seed.py --replace` and run that file after the migration.
 2. In **Settings > API Keys**, create or reveal a server-only key from **Secret keys**.
 3. Set `SUPABASE_URL` and `SUPABASE_SECRET_KEY` in the API server's secret environment.
 4. Set `GLOWFIT_CATALOG_SOURCE=supabase` and the deployed frontend origin in
