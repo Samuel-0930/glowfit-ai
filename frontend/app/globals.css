@@ -91,7 +91,7 @@ a:focus-visible {
 }
 
 .top-nav {
-  background: rgba(255, 255, 255, 0.94);
+  background: var(--background-normal);
   border-bottom: 1px solid var(--line-normal);
   position: sticky;
   top: 0;
