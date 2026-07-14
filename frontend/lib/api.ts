@@ -7,26 +7,31 @@ export type FetchReportResult =
   | { report: null; error: string };
 
 export async function fetchReport(preferences: UserPreferences): Promise<FetchReportResult> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/recommendations`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ preferences, limit: 3 })
-    });
-    if (!response.ok) {
-      const body = (await response.json().catch(() => null)) as { detail?: string } | null;
-      return {
-        report: null,
-        error: body?.detail ?? "추천 결과를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요."
-      };
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/recommendations`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ preferences, limit: 3 })
+      });
+      if (!response.ok) {
+        const body = (await response.json().catch(() => null)) as { detail?: string } | null;
+        if (response.status >= 500 && attempt === 0) continue;
+        return {
+          report: null,
+          error: body?.detail ?? "추천 결과를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요."
+        };
+      }
+      return { report: (await response.json()) as ReportResponse, error: null };
+    } catch {
+      if (attempt === 0) continue;
     }
-    return { report: (await response.json()) as ReportResponse, error: null };
-  } catch {
-    return {
-      report: null,
-      error: "추천 API에 연결할 수 없습니다. 서버 상태를 확인한 뒤 다시 시도해 주세요."
-    };
   }
+
+  return {
+    report: null,
+    error: "추천 API에 연결할 수 없습니다. 서버 상태를 확인한 뒤 다시 시도해 주세요."
+  };
 }
 
 export async function fetchCatalogHealth(): Promise<CatalogHealth | null> {

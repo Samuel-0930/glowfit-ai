@@ -3,6 +3,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import Page from "../app/page";
+import { fetchReport } from "../lib/api";
 import { inferRecommendations } from "../lib/mock-data";
 
 afterEach(() => {
@@ -143,5 +144,34 @@ describe("recommendation flow", () => {
 
     expect(report?.recommendations[0].product.name).toBe("Calm Cushion Repair Cream");
     expect(report?.recommendations).toHaveLength(3);
+  });
+
+  it("retries a transient recommendation API connection failure once", async () => {
+    const report = inferRecommendations({
+      skin_type: "oily",
+      concerns: ["redness"],
+      texture: "cream",
+      fragrance_sensitivity: "medium",
+      budget_max_usd: 30,
+      avoid: ["comedogenic oils"]
+    });
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValueOnce(new TypeError("Failed to fetch"))
+      .mockResolvedValueOnce({ ok: true, json: async () => report });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await fetchReport({
+      skin_type: "oily",
+      concerns: ["redness"],
+      texture: "cream",
+      fragrance_sensitivity: "medium",
+      budget_max_usd: 30,
+      avoid: ["comedogenic oils"]
+    });
+
+    expect(result.error).toBeNull();
+    expect(result.report).toEqual(report);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });
