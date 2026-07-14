@@ -13,11 +13,13 @@ export function ProductCard({
 }) {
   const { product } = recommendation;
   const brand = presentBrand(product.brand);
+  const fitScore = Math.round(recommendation.fit_score * 100);
 
   return (
     <article className={`product-card${isTop ? " product-card-top" : ""}`}>
-      <div className="product-image" aria-hidden="true">
-        {rank}
+      <div className={`product-rank product-rank-${rank}`}>
+        <span aria-hidden="true" className="rank-medallion">{rank}</span>
+        <span className="rank-label">{rank === 1 ? "1위 추천" : `${rank}위 추천`}</span>
       </div>
       <div className="product-card-main">
         {brand && <p className="eyebrow">{brand}</p>}
@@ -27,9 +29,15 @@ export function ProductCard({
           {product.review_count.toLocaleString()}개
         </p>
       </div>
-      <div className="score-circle" style={{ "--score": recommendation.fit_score } as CSSProperties}>
-        <strong>{Math.round(recommendation.fit_score * 100)}</strong>
-        <span>적합도</span>
+      <div className="fit-score">
+        <div className="fit-score-value">
+          <strong>{fitScore}</strong>
+          <span>/ 100</span>
+        </div>
+        <span className="fit-score-label">입력 조건 적합도</span>
+        <div className="fit-score-track" aria-hidden="true">
+          <span style={{ width: `${fitScore}%` } as CSSProperties} />
+        </div>
       </div>
       <div className="product-reasons" aria-label={`${product.name} 추천 근거`}>
         {recommendation.reasons.slice(0, 3).map((reason) => (
