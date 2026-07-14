@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from typing import Any
 from urllib.error import URLError
+from urllib.parse import parse_qs, urlparse
 
 from src.glowfit.catalog import (
     CachedCatalogRepository,
@@ -84,11 +85,15 @@ def test_supabase_catalog_repository_rebuilds_product_attributes(
             return json.dumps(self.payload).encode("utf-8")
 
     def fake_urlopen(request: Any, timeout: int) -> FakeResponse:
-        table = request.full_url.split("/rest/v1/")[1].split("?")[0]
+        parsed_url = urlparse(request.full_url)
+        table = parsed_url.path.split("/rest/v1/")[1]
+        query = parse_qs(parsed_url.query)
         assert timeout == 10
         assert request.headers["Apikey"] == "sb_secret_test-key"
         assert "Authorization" not in request.headers
-        return FakeResponse(payloads[table])
+        offset = int(query["offset"][0])
+        limit = int(query["limit"][0])
+        return FakeResponse(payloads[table][offset : offset + limit])
 
     monkeypatch.setattr("src.glowfit.catalog.urlopen", fake_urlopen)
 
@@ -99,6 +104,39 @@ def test_supabase_catalog_repository_rebuilds_product_attributes(
     assert catalog.source == "supabase"
     assert catalog.products[0].attributes == ["dry skin", "fragrance free"]
     assert catalog.reviews[0].timestamp == "2025-01-01"
+
+
+def test_supabase_catalog_repository_reads_all_pages(monkeypatch: Any) -> None:
+    rows = [{"review_id": f"r_{index}"} for index in range(1001)]
+    offsets: list[int] = []
+
+    class FakeResponse:
+        def __init__(self, payload: object) -> None:
+            self.payload = payload
+
+        def __enter__(self) -> FakeResponse:
+            return self
+
+        def __exit__(self, *_: object) -> None:
+            return None
+
+        def read(self) -> bytes:
+            return json.dumps(self.payload).encode("utf-8")
+
+    def fake_urlopen(request: Any, timeout: int) -> FakeResponse:
+        query = parse_qs(urlparse(request.full_url).query)
+        offset = int(query["offset"][0])
+        offsets.append(offset)
+        assert query["order"] == ["review_id.asc"]
+        return FakeResponse(rows[offset : offset + int(query["limit"][0])])
+
+    monkeypatch.setattr("src.glowfit.catalog.urlopen", fake_urlopen)
+    repository = SupabaseCatalogRepository(
+        url="https://example.supabase.co", api_key="sb_secret_test-key"
+    )
+
+    assert repository._select("reviews", "review_id") == rows
+    assert offsets == [0, 1000]
 
 
 def test_supabase_catalog_repository_uses_bearer_header_for_legacy_key(

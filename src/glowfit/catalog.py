@@ -89,19 +89,34 @@ class SupabaseCatalogRepository:
     api_key: str
 
     def _select(self, table: str, columns: str) -> list[dict[str, object]]:
-        query = urlencode({"select": columns})
         headers = {"apikey": self.api_key}
         if not self.api_key.startswith("sb_secret_"):
             headers["Authorization"] = f"Bearer {self.api_key}"
-        request = Request(
-            f"{self.url.rstrip('/')}/rest/v1/{table}?{query}",
-            headers=headers,
-        )
-        with urlopen(request, timeout=10) as response:  # noqa: S310 - configured Supabase URL
-            payload = json.loads(response.read().decode("utf-8"))
-        if not isinstance(payload, list):
-            raise ValueError(f"Expected a list response from Supabase table {table}")
-        return payload
+        order = {
+            "products": "product_id.asc",
+            "product_tags": "product_id.asc,tag.asc",
+            "reviews": "review_id.asc",
+        }[table]
+        page_size = 1000
+        rows: list[dict[str, object]] = []
+        offset = 0
+
+        while True:
+            query = urlencode(
+                {"select": columns, "order": order, "limit": page_size, "offset": offset}
+            )
+            request = Request(
+                f"{self.url.rstrip('/')}/rest/v1/{table}?{query}",
+                headers=headers,
+            )
+            with urlopen(request, timeout=10) as response:  # noqa: S310 - configured Supabase URL
+                payload = json.loads(response.read().decode("utf-8"))
+            if not isinstance(payload, list):
+                raise ValueError(f"Expected a list response from Supabase table {table}")
+            rows.extend(payload)
+            if len(payload) < page_size:
+                return rows
+            offset += page_size
 
     def load(self) -> Catalog:
         products = self._select(
