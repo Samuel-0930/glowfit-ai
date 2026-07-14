@@ -173,5 +173,6 @@ describe("recommendation flow", () => {
     expect(result.error).toBeNull();
     expect(result.report).toEqual(report);
     expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock.mock.calls[0][0]).toMatch(/\/recommendations$/);
   });
 });
