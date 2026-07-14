@@ -149,7 +149,7 @@ export function PreferenceForm({ preferences, onChange, onGenerate, onDemoSelect
         </div>
       </div>
 
-      <button className="primary-button" onClick={onGenerate} disabled={isLoading || !isReady}>
+      <button className="primary-button" onClick={() => onGenerate()} disabled={isLoading || !isReady}>
         {isLoading ? "추천 계산 중" : "추천 받기"}
       </button>
     </aside>
