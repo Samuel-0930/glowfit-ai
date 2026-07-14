@@ -699,7 +699,6 @@ meter {
     padding: 16px;
   }
 
-  .product-card,
   .evaluation-row,
   .decision-strip,
   .metrics-grid,
@@ -708,8 +707,21 @@ meter {
     grid-template-columns: 1fr;
   }
 
+  .product-card {
+    align-items: start;
+    grid-template-columns: 52px minmax(0, 1fr) 64px;
+  }
+
+  .product-image {
+    width: 52px;
+  }
+
+  .score-circle {
+    width: 64px;
+  }
+
   .product-reasons,
   .product-caution {
-    grid-column: auto;
+    grid-column: 2 / -1;
   }
 }
