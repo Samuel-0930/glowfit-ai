@@ -37,6 +37,54 @@ def test_select_hub_products_keeps_high_review_skincare_products() -> None:
     assert [product.product_id for product in products] == ["high", "low"]
 
 
+def test_select_hub_products_excludes_non_face_beauty_and_uses_canonical_tags() -> None:
+    products = select_hub_products(
+        [
+            {
+                "parent_asin": "face-serum",
+                "title": "Fragrance-Free Retinol Face Serum",
+                "features": ["Lightweight formula for sensitive skin"],
+                "rating_number": 20,
+            },
+            {
+                "parent_asin": "hand-cream",
+                "title": "Moisturizing Hand Cream for Dry Skin",
+                "rating_number": 200,
+            },
+            {
+                "parent_asin": "lipstick",
+                "title": "Long Lasting Lipstick with Hydrating Formula",
+                "rating_number": 300,
+            },
+            {
+                "parent_asin": "nails",
+                "title": "No Cleanser Needed UV/LED Gel Top Coat",
+                "rating_number": 300,
+            },
+            {
+                "parent_asin": "tool",
+                "title": "Facial Skincare Mask Mixing Bowl Tool",
+                "rating_number": 300,
+            },
+            {
+                "parent_asin": "roller",
+                "title": "Jade Roller Gua Sha Facial Skincare Tools",
+                "rating_number": 300,
+            },
+        ],
+        max_products=6,
+    )
+
+    assert [product.product_id for product in products] == ["face-serum"]
+    assert products[0].category == "serum"
+    assert products[0].attributes == [
+        "fragrance free",
+        "sensitive skin",
+        "light texture",
+        "retinol",
+    ]
+
+
 def test_collect_matching_reviews_accepts_hub_csv_shape() -> None:
     reviews = collect_matching_reviews(
         [

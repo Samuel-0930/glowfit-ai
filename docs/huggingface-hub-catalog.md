@@ -35,6 +35,18 @@ uv run --extra ingestion python scripts/fetch_huggingface_hub_catalog.py \
 
 `min_reviews_per_product`를 충족하지 못한 상품은 산출물에서 제외한다. 따라서 평가·리뷰 근거 화면에 상품만 있고 연결된 리뷰가 없는 상태를 만들지 않는다.
 
+## 스킨케어 정제 규칙
+
+원본 All Beauty 데이터는 스킨케어와 핸드·바디·립·네일·뷰티 도구를 함께 포함한다. GlowFit은 얼굴
+스킨케어 추천을 목표로 하므로 제목 및 보조 메타데이터에 serum, moisturizer, sunscreen, cleanser,
+toner, face mask, face oil 등의 신호가 있는 상품만 후보로 삼는다. 핸드·바디·립·네일, 화장품, 도구,
+마사지기, 풋케어 등은 제목 기준으로 제외한다.
+
+긴 원문 feature를 그대로 태그로 저장하지 않는다. `sensitive skin`, `fragrance free`, `calming`,
+`barrier care`, `light texture`처럼 제한된 canonical tag로 정규화하고, 제품 유형도 sunscreen,
+cleanser, serum 등으로 분류한다. 이 규칙은 추천 근거를 사람이 읽을 수 있는 짧은 표현으로 유지하기
+위한 데이터 품질 계약이다.
+
 ## 확인한 장애와 대체 원칙
 
 2026-07-14에 Dataset Viewer의 `is-valid`, `splits`, `rows` 요청은 두 공개 데이터셋에서 모두 HTTP 503을 반환했다. 반면 Hugging Face Hub API와 원본 파일 다운로드는 정상 동작했다.

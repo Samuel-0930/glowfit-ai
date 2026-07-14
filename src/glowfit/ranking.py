@@ -18,7 +18,7 @@ def _as_score_map(ranked: list[tuple[str, float]]) -> dict[str, float]:
 def _reason_terms(preferences: UserPreferences) -> list[str]:
     terms = [preferences.skin_type, preferences.texture, *preferences.concerns]
     if preferences.fragrance_sensitivity == "high":
-        terms.append("fragrance")
+        terms.append("fragrance free")
     return terms
 
 

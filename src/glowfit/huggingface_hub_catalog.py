@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 from collections import defaultdict
 from collections.abc import Callable, Iterable
 from io import TextIOWrapper
@@ -17,8 +18,7 @@ from src.glowfit.huggingface_preview import _review_row_to_review
 from src.glowfit.schemas import Product, Review
 
 HUGGING_FACE_DATASET_BASE_URL = "https://huggingface.co/datasets"
-SKINCARE_TERMS = (
-    "skin care",
+FACE_SKINCARE_TERMS = (
     "skincare",
     "serum",
     "moisturizer",
@@ -31,8 +31,9 @@ SKINCARE_TERMS = (
     "hyaluronic",
     "eye cream",
     "face mask",
+    "face oil",
 )
-NON_SKINCARE_TERMS = (
+NON_FACE_SKINCARE_TERMS = (
     "hair",
     "conditioner",
     "shampoo",
@@ -40,6 +41,50 @@ NON_SKINCARE_TERMS = (
     "razor",
     "nail",
     "tattoo",
+    "hand",
+    "body",
+    "lip",
+    "lipstick",
+    "makeup",
+    "cosmetic cooler",
+    "bath bomb",
+    "antiperspirant",
+    "antiseptic",
+    "foot",
+    "eyelid",
+    "soap",
+    "beauty bar",
+    "tool",
+    "tools",
+    "applicator",
+    "mixing bowl",
+    "scraper",
+    "massage",
+    "massager",
+    "roller",
+    "gua sha",
+    "ice globes",
+    "pedimask",
+    "top coat",
+    "gel polish",
+    "soak off",
+    "uv/led",
+)
+ATTRIBUTE_RULES = (
+    ("fragrance free", ("fragrance-free", "fragrance free", "unscented", "without fragrance")),
+    ("sensitive skin", ("sensitive skin", "gentle", "non-irritating", "hypoallergenic")),
+    ("dry skin", ("dry skin", "hydrating", "hydration", "moisturizing")),
+    ("oily skin", ("oily skin", "oil control", "non-greasy")),
+    ("calming", ("calming", "soothing", "redness", "cica", "centella")),
+    ("barrier care", ("skin barrier", "barrier repair", "ceramide")),
+    ("light texture", ("lightweight", "light texture")),
+    ("watery texture", ("watery", "water-based")),
+    ("gel texture", ("gel", "jelly")),
+    ("cream texture", ("cream",)),
+    ("matte finish", ("matte",)),
+    ("no white cast", ("no white cast", "clear sunscreen")),
+    ("retinol", ("retinol",)),
+    ("vitamin c", ("vitamin c",)),
 )
 
 
@@ -99,12 +144,58 @@ def load_parquet_rows(path: Path) -> list[dict[str, Any]]:
 
 
 def _is_skincare_product(record: dict[str, Any]) -> bool:
-    searchable_text = " ".join(
+    title = str(record.get("title") or record.get("name") or "").lower()
+    supporting_text = " ".join(
         str(record.get(field) or "")
-        for field in ("title", "features", "description", "skin_type", "item_form")
+        for field in ("item_form", "skin_type", "categories")
     ).lower()
-    return any(term in searchable_text for term in SKINCARE_TERMS) and not any(
-        term in searchable_text for term in NON_SKINCARE_TERMS
+    is_face_skincare = any(
+        _contains_term(title, term) or _contains_term(supporting_text, term)
+        for term in FACE_SKINCARE_TERMS
+    )
+    return is_face_skincare and not any(
+        _contains_term(title, term) for term in NON_FACE_SKINCARE_TERMS
+    )
+
+
+def _contains_term(text: str, term: str) -> bool:
+    return re.search(rf"\b{re.escape(term)}\b", text) is not None
+
+
+def _category_from_product_text(text: str) -> str:
+    for category, terms in (
+        ("sunscreen", ("sunscreen", "spf")),
+        ("cleanser", ("cleanser", "cleansing", "makeup remover")),
+        ("toner", ("toner",)),
+        ("serum", ("serum", "ampoule")),
+        ("mask", ("face mask", "facial mask")),
+        ("eye care", ("eye cream", "eye serum")),
+        ("moisturizer", ("moisturizer", "moisturising", "face cream", "facial cream")),
+        ("face oil", ("face oil", "facial oil")),
+    ):
+        if any(_contains_term(text, term) for term in terms):
+            return category
+    return "skincare"
+
+
+def _canonical_attributes(record: dict[str, Any]) -> list[str]:
+    searchable_text = " ".join(
+        str(record.get(field) or "") for field in ("title", "features", "description", "skin_type")
+    ).lower()
+    return [
+        attribute
+        for attribute, terms in ATTRIBUTE_RULES
+        if any(_contains_term(searchable_text, term) for term in terms)
+    ]
+
+
+def _normalize_hub_product(record: dict[str, Any]) -> Product:
+    product = parse_amazon_metadata_record(record)
+    return product.model_copy(
+        update={
+            "category": _category_from_product_text(product.name.lower()),
+            "attributes": _canonical_attributes(record),
+        }
     )
 
 
@@ -116,7 +207,7 @@ def select_hub_products(
     for row in metadata_rows:
         if not _is_skincare_product(row):
             continue
-        product = parse_amazon_metadata_record(row)
+        product = _normalize_hub_product(row)
         if not product.product_id or product.product_id in seen_ids:
             continue
         seen_ids.add(product.product_id)
