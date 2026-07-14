@@ -26,7 +26,7 @@ export function PreferenceForm({ preferences, onChange, onGenerate, onDemoSelect
   );
 
   return (
-    <aside className="preference-panel">
+    <aside aria-busy={isLoading} className="preference-panel">
       <div className="panel-heading">
         <p className="eyebrow">프로필 입력</p>
         <h2>피부 조건</h2>
@@ -149,7 +149,12 @@ export function PreferenceForm({ preferences, onChange, onGenerate, onDemoSelect
         </div>
       </div>
 
-      <button className="primary-button" onClick={() => onGenerate()} disabled={isLoading || !isReady}>
+      <button
+        aria-live="polite"
+        className="primary-button"
+        onClick={() => onGenerate()}
+        disabled={isLoading || !isReady}
+      >
         {isLoading ? "추천 계산 중" : "추천 받기"}
       </button>
     </aside>

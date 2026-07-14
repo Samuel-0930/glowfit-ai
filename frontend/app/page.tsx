@@ -97,18 +97,20 @@ export default function Page() {
     <AppShell activeTab={activeTab} onTabChange={handleTabChange}>
       {activeTab === "recommend" && (
         <main className="workspace">
-          <PreferenceForm
-            preferences={preferences}
-            onChange={handlePreferenceChange}
-            onDemoSelect={handleDemoSelect}
-            onGenerate={handleGenerate}
-            isLoading={isLoading}
-          />
-          {requestError && (
-            <p className="request-error" role="alert">
-              {requestError}
-            </p>
-          )}
+          <div className="workspace-sidebar">
+            <PreferenceForm
+              preferences={preferences}
+              onChange={handlePreferenceChange}
+              onDemoSelect={handleDemoSelect}
+              onGenerate={handleGenerate}
+              isLoading={isLoading}
+            />
+            {requestError && (
+              <p className="request-error" role="alert">
+                {requestError}
+              </p>
+            )}
+          </div>
           <RecommendationReport catalogHealth={catalogHealth} report={currentReport} />
         </main>
       )}

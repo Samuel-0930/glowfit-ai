@@ -20,20 +20,25 @@ export function AppShell({ activeTab, children, onTabChange }: Props) {
   return (
     <>
       <header className="top-nav">
-        <strong>GlowFit AI</strong>
-        <nav aria-label="주요 화면">
-          {tabs.map(([id, label]) => (
-            <button
-              aria-current={activeTab === id ? "page" : undefined}
-              className="nav-tab"
-              key={id}
-              onClick={() => onTabChange(id)}
-              type="button"
-            >
-              {label}
-            </button>
-          ))}
-        </nav>
+        <div className="top-nav-inner">
+          <div className="brand-lockup" aria-label="GlowFit AI">
+            <strong>GlowFit</strong>
+            <span>AI</span>
+          </div>
+          <nav aria-label="주요 화면">
+            {tabs.map(([id, label]) => (
+              <button
+                aria-current={activeTab === id ? "page" : undefined}
+                className="nav-tab"
+                key={id}
+                onClick={() => onTabChange(id)}
+                type="button"
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
+        </div>
       </header>
       {children}
     </>
