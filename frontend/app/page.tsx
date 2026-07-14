@@ -65,10 +65,10 @@ export default function Page() {
     void fetchCatalogHealth().then(setCatalogHealth);
   }, []);
 
-  async function handleGenerate() {
+  async function handleGenerate(nextPreferences = preferences) {
     setIsLoading(true);
     setRequestError(null);
-    const result = await fetchReport(preferences);
+    const result = await fetchReport(nextPreferences);
     setReport(result.report);
     setRequestError(result.error);
     setIsLoading(false);
@@ -78,6 +78,12 @@ export default function Page() {
     setPreferences(nextPreferences);
     setReport(null);
     setRequestError(null);
+  }
+
+  function handleDemoSelect(nextPreferences: UserPreferences) {
+    setPreferences(nextPreferences);
+    setReport(null);
+    void handleGenerate(nextPreferences);
   }
 
   function handleTabChange(tab: string) {
@@ -93,6 +99,7 @@ export default function Page() {
           <PreferenceForm
             preferences={preferences}
             onChange={handlePreferenceChange}
+            onDemoSelect={handleDemoSelect}
             onGenerate={handleGenerate}
             isLoading={isLoading}
           />

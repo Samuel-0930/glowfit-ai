@@ -120,6 +120,65 @@ button {
   gap: 6px;
 }
 
+.demo-profiles {
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+}
+
+.demo-profiles > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.demo-profiles > div:first-child > p:last-child {
+  color: var(--ink-muted);
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.demo-profile-list {
+  display: grid;
+  gap: 6px;
+}
+
+.demo-profile-button {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 7px;
+  color: var(--ink);
+  cursor: pointer;
+  display: grid;
+  gap: 3px;
+  padding: 9px 10px;
+  text-align: left;
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.demo-profile-button:hover {
+  border-color: var(--brand);
+  transform: translateY(-1px);
+}
+
+.demo-profile-button:focus-visible {
+  outline: 3px solid rgba(15, 123, 62, 0.25);
+  outline-offset: 2px;
+}
+
+.demo-profile-button strong {
+  font-size: 13px;
+}
+
+.demo-profile-button span {
+  color: var(--ink-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
 .panel-heading h1,
 .panel-heading h2,
 .content-panel h1,

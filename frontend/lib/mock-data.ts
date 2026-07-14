@@ -16,6 +16,49 @@ export const defaultPreferences: UserPreferences = {
   avoid: []
 };
 
+export const demoProfiles: Array<{
+  title: string;
+  description: string;
+  preferences: UserPreferences;
+}> = [
+  {
+    title: "민감 · 붉은기",
+    description: "자극이 적고 진정에 초점을 둔 추천",
+    preferences: {
+      skin_type: "sensitive",
+      concerns: ["redness", "stinging"],
+      texture: "cream",
+      fragrance_sensitivity: "high",
+      budget_max_usd: 30,
+      avoid: ["strong scent"]
+    }
+  },
+  {
+    title: "지성 · 트러블",
+    description: "가벼운 사용감과 유분 밸런스를 고려한 추천",
+    preferences: {
+      skin_type: "oily",
+      concerns: ["acne", "pores"],
+      texture: "watery",
+      fragrance_sensitivity: "medium",
+      budget_max_usd: 25,
+      avoid: ["sticky finish"]
+    }
+  },
+  {
+    title: "건성 · 장벽 케어",
+    description: "보습과 피부 장벽 관리에 초점을 둔 추천",
+    preferences: {
+      skin_type: "dry",
+      concerns: ["barrier care", "calming"],
+      texture: "lotion",
+      fragrance_sensitivity: "high",
+      budget_max_usd: 30,
+      avoid: []
+    }
+  }
+];
+
 type ProductRecord = Product & {
   match_tags: string[];
   avoid_tags: string[];

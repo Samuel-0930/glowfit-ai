@@ -42,6 +42,28 @@ describe("recommendation flow", () => {
     expect(screen.getByText("랭킹 상세 보기")).toBeInTheDocument();
   });
 
+  it("loads a recommendation from a quick demo profile", async () => {
+    const report = inferRecommendations({
+      skin_type: "oily",
+      concerns: ["acne", "pores"],
+      texture: "watery",
+      fragrance_sensitivity: "medium",
+      budget_max_usd: 25,
+      avoid: ["sticky finish"]
+    });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({ ok: true, json: async () => report })
+    );
+    render(<Page />);
+
+    fireEvent.click(screen.getByRole("button", { name: /지성 · 트러블/ }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Pore Reset Water Serum" })).toBeInTheDocument();
+    });
+  });
+
   it("shows an API error instead of presenting a mock result", async () => {
     vi.stubGlobal(
       "fetch",

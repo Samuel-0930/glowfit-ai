@@ -1,4 +1,4 @@
-import { avoidOptions, concernOptions, textureOptions } from "../lib/mock-data";
+import { avoidOptions, concernOptions, demoProfiles, textureOptions } from "../lib/mock-data";
 import { presentLabel } from "../lib/presentation";
 import type { UserPreferences } from "../lib/types";
 
@@ -6,6 +6,7 @@ type Props = {
   preferences: UserPreferences;
   onChange: (preferences: UserPreferences) => void;
   onGenerate: () => void;
+  onDemoSelect: (preferences: UserPreferences) => void;
   isLoading: boolean;
 };
 
@@ -16,7 +17,7 @@ function toggleValue(values: string[], value: string) {
   return values.includes(value) ? values.filter((item) => item !== value) : [...values, value];
 }
 
-export function PreferenceForm({ preferences, onChange, onGenerate, isLoading }: Props) {
+export function PreferenceForm({ preferences, onChange, onGenerate, onDemoSelect, isLoading }: Props) {
   const isReady = Boolean(
     preferences.skin_type &&
       preferences.texture &&
@@ -30,6 +31,26 @@ export function PreferenceForm({ preferences, onChange, onGenerate, isLoading }:
         <p className="eyebrow">프로필 입력</p>
         <h2>피부 조건</h2>
       </div>
+
+      <section className="demo-profiles" aria-labelledby="demo-profiles-title">
+        <div>
+          <p className="eyebrow" id="demo-profiles-title">빠른 체험</p>
+          <p>대표 프로필을 선택하면 바로 추천 결과를 확인할 수 있어요.</p>
+        </div>
+        <div className="demo-profile-list">
+          {demoProfiles.map((profile) => (
+            <button
+              className="demo-profile-button"
+              key={profile.title}
+              onClick={() => onDemoSelect(profile.preferences)}
+              type="button"
+            >
+              <strong>{profile.title}</strong>
+              <span>{profile.description}</span>
+            </button>
+          ))}
+        </div>
+      </section>
 
       <label className="select-field">
         <span>피부 타입</span>
