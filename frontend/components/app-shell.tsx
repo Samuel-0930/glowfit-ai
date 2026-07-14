@@ -12,7 +12,6 @@ const tabs = [
   ["recommend", "추천"],
   ["compare", "비교"],
   ["insights", "리뷰 분석"],
-  ["experiments", "실험"],
   ["portfolio", "구성"]
 ];
 
