@@ -31,6 +31,8 @@ const labels: Record<string, string> = {
   "watery texture": "워터리 제형",
   "gel texture": "젤 제형",
   "cream texture": "크림 제형",
+  texture: "사용감",
+  fragrance: "향",
   "matte finish": "보송한 마무리",
   "no white cast": "백탁 적음",
   sunscreen: "선크림",
@@ -45,4 +47,21 @@ const labels: Record<string, string> = {
 
 export function presentLabel(value: string) {
   return labels[value.toLowerCase()] ?? value;
+}
+
+export function presentBrand(brand: string) {
+  return brand.trim().toLowerCase() === "unknown" ? null : brand;
+}
+
+export function presentPrice(priceUsd: number) {
+  if (!Number.isFinite(priceUsd) || priceUsd <= 0) return "가격 정보 없음";
+
+  return `$${new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(priceUsd)}`;
+}
+
+export function presentReviewExcerpt(text: string, maxLength = 260) {
+  const normalized = text.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  if (normalized.length <= maxLength) return normalized;
+
+  return `${normalized.slice(0, maxLength).trimEnd()}…`;
 }

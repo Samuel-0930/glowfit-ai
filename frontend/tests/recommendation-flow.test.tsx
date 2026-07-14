@@ -12,18 +12,27 @@ afterEach(() => {
 
 describe("recommendation flow", () => {
   it("starts empty and renders recommendations after the profile is configured", async () => {
-    const report = inferRecommendations({
+    const preferences = {
       skin_type: "oily",
       concerns: ["acne", "pores"],
       texture: "watery",
       fragrance_sensitivity: "medium",
       budget_max_usd: 25,
       avoid: []
+    };
+    const report = inferRecommendations(preferences);
+    const fetchMock = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
+      if (String(input).endsWith("/health")) {
+        return {
+          ok: true,
+          json: async () => ({ status: "ok", data_source: "supabase", product_count: 100, review_count: 1074 })
+        };
+      }
+
+      expect(JSON.parse(String(init?.body))).toEqual({ preferences, limit: 3 });
+      return { ok: true, json: async () => report };
     });
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({ ok: true, json: async () => report })
-    );
+    vi.stubGlobal("fetch", fetchMock);
     window.history.replaceState(null, "", "#recommend");
     render(<Page />);
 
@@ -41,6 +50,10 @@ describe("recommendation flow", () => {
     });
     expect(screen.getByRole("heading", { name: "왜 Pore Reset Water Serum인가요?" })).toBeInTheDocument();
     expect(screen.getByText("랭킹 상세 보기")).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringMatching(/\/recommendations$/),
+      expect.objectContaining({ method: "POST" })
+    );
   });
 
   it("loads a recommendation from a quick demo profile", async () => {

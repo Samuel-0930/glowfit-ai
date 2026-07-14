@@ -1,5 +1,5 @@
 import type { Recommendation } from "../lib/types";
-import { presentLabel } from "../lib/presentation";
+import { presentLabel, presentReviewExcerpt } from "../lib/presentation";
 
 export function EvidencePanel({ recommendation }: { recommendation: Recommendation }) {
   return (
@@ -8,7 +8,7 @@ export function EvidencePanel({ recommendation }: { recommendation: Recommendati
       <h2>리뷰로 확인한 이유</h2>
       {recommendation.evidence.map((snippet) => (
         <figure key={snippet.review_id} className="evidence-card">
-          <blockquote>{snippet.text}</blockquote>
+          <blockquote>{presentReviewExcerpt(snippet.text)}</blockquote>
           <figcaption>
             {snippet.sentiment === "positive" ? "긍정 리뷰" : "참고 리뷰"} · 사용자 경험 근거
           </figcaption>

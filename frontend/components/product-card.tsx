@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { presentLabel } from "../lib/presentation";
+import { presentBrand, presentLabel, presentPrice } from "../lib/presentation";
 import type { Recommendation } from "../lib/types";
 
 export function ProductCard({
@@ -12,6 +12,7 @@ export function ProductCard({
   isTop?: boolean;
 }) {
   const { product } = recommendation;
+  const brand = presentBrand(product.brand);
 
   return (
     <article className={`product-card${isTop ? " product-card-top" : ""}`}>
@@ -19,10 +20,10 @@ export function ProductCard({
         {rank}
       </div>
       <div className="product-card-main">
-        <p className="eyebrow">{product.brand}</p>
+        {brand && <p className="eyebrow">{brand}</p>}
         <h3>{product.name}</h3>
         <p className="muted">
-          {presentLabel(product.category)} · ${product.price_usd} · 평점 {product.average_rating.toFixed(1)} · 리뷰{" "}
+          {presentLabel(product.category)} · {presentPrice(product.price_usd)} · 평점 {product.average_rating.toFixed(1)} · 리뷰{" "}
           {product.review_count.toLocaleString()}개
         </p>
       </div>

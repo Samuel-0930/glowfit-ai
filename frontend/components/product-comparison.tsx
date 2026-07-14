@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { presentBrand, presentLabel, presentPrice } from "../lib/presentation";
 import type { Recommendation } from "../lib/types";
 
 export function ProductComparison({ recommendations }: { recommendations: Recommendation[] }) {
@@ -37,16 +38,16 @@ export function ProductComparison({ recommendations }: { recommendations: Recomm
         {recommendations.map((item) => (
           <article key={item.product.product_id} className="comparison-card">
             <div>
-              <p className="eyebrow">{item.product.brand}</p>
+              {presentBrand(item.product.brand) && <p className="eyebrow">{presentBrand(item.product.brand)}</p>}
               <h2>{item.product.name}</h2>
               <p className="muted">
-                {item.product.category} · ${item.product.price_usd} · {item.product.average_rating.toFixed(1)}점
+                {presentLabel(item.product.category)} · {presentPrice(item.product.price_usd)} · 평점 {item.product.average_rating.toFixed(1)}
               </p>
             </div>
             <div className="score-pair">
               <div className="score-circle large" style={{ "--score": item.fit_score } as CSSProperties}>
                 <strong>{Math.round(item.fit_score * 100)}</strong>
-                <span>fit</span>
+                <span>적합도</span>
               </div>
               <div className="score-circle large" style={{ "--score": item.evidence_strength } as CSSProperties}>
                 <strong>{Math.round(item.evidence_strength * 100)}</strong>
@@ -58,7 +59,7 @@ export function ProductComparison({ recommendations }: { recommendations: Recomm
               <div className="tag-row">
                 {item.reasons.map((reason) => (
                   <span className="tag" key={reason}>
-                    {reason}
+                    {presentLabel(reason)}
                   </span>
                 ))}
               </div>

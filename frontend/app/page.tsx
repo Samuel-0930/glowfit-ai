@@ -8,6 +8,7 @@ import { ProductComparison } from "../components/product-comparison";
 import { RecommendationReport } from "../components/recommendation-report";
 import { fetchCatalogHealth, fetchReport } from "../lib/api";
 import { defaultPreferences } from "../lib/mock-data";
+import { presentLabel, presentReviewExcerpt } from "../lib/presentation";
 import { samplePublicEvaluation } from "../lib/sample-public-evaluation";
 import type { CatalogHealth, ReportResponse, UserPreferences } from "../lib/types";
 
@@ -148,7 +149,7 @@ export default function Page() {
                     <h2>Aspect coverage</h2>
                     {topAspects.map(([aspect, count]) => (
                       <div className="metric-row" key={aspect}>
-                        <span>{aspect}</span>
+                        <span>{presentLabel(aspect)}</span>
                         <meter max={Math.max(...topAspects.map(([, value]) => value))} min={0} value={count} />
                         <strong>{count}</strong>
                       </div>
@@ -169,14 +170,14 @@ export default function Page() {
               {allEvidence.map((snippet) => (
                 <article className="evidence-card" key={snippet.review_id}>
                   <p className="eyebrow">{snippet.productName}</p>
-                  <blockquote>{snippet.text}</blockquote>
+                  <blockquote>{presentReviewExcerpt(snippet.text)}</blockquote>
                   <figcaption>
                     {snippet.sentiment} · relevance {snippet.relevance.toFixed(1)}
                   </figcaption>
                   <div className="tag-row">
                     {snippet.aspects.map((aspect) => (
                       <span className="tag tag-soft" key={aspect}>
-                        {aspect}
+                        {presentLabel(aspect)}
                       </span>
                     ))}
                   </div>
