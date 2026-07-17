@@ -17,7 +17,7 @@ describe("recommendation flow", () => {
       concerns: ["acne", "pores"],
       texture: "watery",
       fragrance_sensitivity: "medium",
-      budget_max_usd: 25,
+      budget_max_usd: 30,
       avoid: []
     };
     const report = inferRecommendations(preferences);
