@@ -29,7 +29,6 @@ describe("recommendation flow", () => {
         };
       }
 
-      expect(JSON.parse(String(init?.body))).toEqual({ preferences, limit: 3 });
       return { ok: true, json: async () => report };
     });
     vi.stubGlobal("fetch", fetchMock);
@@ -52,7 +51,10 @@ describe("recommendation flow", () => {
     expect(screen.getByText("랭킹 상세 보기")).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringMatching(/\/recommendations$/),
-      expect.objectContaining({ method: "POST" })
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({ preferences, limit: 3 })
+      })
     );
   });
 
